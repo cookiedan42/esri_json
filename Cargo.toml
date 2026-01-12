@@ -1,0 +1,9 @@
+[workspace]
+resolver = "2"
+members = [
+    "esri_json",
+    "esri_json_py",
+    "esri_json_wasm",
+    "esri_json_test_fixtures",
+    "esri_json_tests",
+]
