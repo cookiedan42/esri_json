@@ -1,5 +1,11 @@
 [package]
 name = "esri_json"
+description = "Serializing and Deserializing Esri JSON using serde"
+repository = "https://github.com/cookiedan42/esri_json"
+readme = "../README.md"
+keywords = ["esri", "geo", "gis", "spatial"]
+authors = ["Daniel Tan<Daniel@cookiedan42.com>"]
+
 version = "0.1.0"
 edition = "2024"
 license = "Apache-2.0"

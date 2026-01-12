@@ -4,6 +4,7 @@ version = "0.1.0"
 authors = ["cookiedan42 <git@cookiedan42.com>"]
 edition = "2024"
 license = "Apache-2.0"
+publish = false
 
 [lib]
 crate-type = ["cdylib", "rlib"]
