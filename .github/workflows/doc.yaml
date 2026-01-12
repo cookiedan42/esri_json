@@ -26,7 +26,7 @@ jobs:
           override: true
 
       - name: Build documentation
-        run: RUSTDOCFLAGS="--html-in-header katex-header.html" cargo doc --no-deps --manifest-path ./esri_json/Cargo.toml
+        run: cargo doc --no-deps --manifest-path ./esri_json/Cargo.toml
         # uses: actions-rs/cargo@v1
         # with:
         #   command: doc
