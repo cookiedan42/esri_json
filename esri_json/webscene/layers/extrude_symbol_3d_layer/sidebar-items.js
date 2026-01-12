@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Color"],"struct":["Edges","ExtrudeSymbol3DLayer","Material"]};

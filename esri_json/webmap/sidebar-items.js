@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Color"],"mod":["esri_sfs","esri_sls","esri_sms"]};

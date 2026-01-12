@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Color","Style"],"struct":["EsriSFS","Outline"]};

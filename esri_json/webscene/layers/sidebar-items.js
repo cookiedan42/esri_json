@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["extrude_symbol_3d_layer","fill_symbol_3d_layer","icon_symbol_3d_layer","line_symbol_3d_layer","object_symbol_3d_layer","path_symbol_3d_layer","text_symbol_3d_layer","water_symbol_3d_layer"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["PointSymbolSceneView","PolygonSymbolSceneView","PolylineSymbolSceneView"],"struct":["Graphic"],"trait":["GeometrySymbolPair"]};

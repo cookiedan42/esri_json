@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Color","ColorMixMode","LineCap","LinePattern","PolygonPattern"],"struct":["Edges","FillSymbol3DLayer","Material","Outline"]};

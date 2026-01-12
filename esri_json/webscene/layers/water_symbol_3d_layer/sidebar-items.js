@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Color","WaterbodySize","WaveStrength"],"struct":["WaterSymbol3DLayer"]};

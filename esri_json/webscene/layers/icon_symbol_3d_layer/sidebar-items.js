@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Anchor","Color","IconPrimitive"],"struct":["IconSymbol3DLayer","Material","Outline","Resource"]};

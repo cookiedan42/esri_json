@@ -1,0 +1,9 @@
+(function() {
+    const implementors = Object.fromEntries([["esri_json",[["impl&lt;C&gt; <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/convert/trait.TryInto.html\" title=\"trait core::convert::TryInto\">TryInto</a>&lt;<a class=\"enum\" href=\"esri_json/geometry/enum.Geometry.html\" title=\"enum esri_json::geometry::Geometry\">Geometry</a>&lt;C&gt;&gt; for &amp;Geometry&lt;<a class=\"primitive\" href=\"https://doc.rust-lang.org/nightly/std/primitive.f64.html\">f64</a>&gt;<div class=\"where\">where\n    C: <a class=\"trait\" href=\"esri_json/geometry/trait.Coord.html\" title=\"trait esri_json::geometry::Coord\">Coord</a> + for&lt;'a&gt; <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/convert/trait.From.html\" title=\"trait core::convert::From\">From</a>&lt;&amp;'a Coord&gt;,</div>",0],["impl&lt;C&gt; <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/convert/trait.TryInto.html\" title=\"trait core::convert::TryInto\">TryInto</a>&lt;<a class=\"enum\" href=\"esri_json/geometry/enum.Geometry.html\" title=\"enum esri_json::geometry::Geometry\">Geometry</a>&lt;C&gt;&gt; for Geometry&lt;<a class=\"primitive\" href=\"https://doc.rust-lang.org/nightly/std/primitive.f64.html\">f64</a>&gt;<div class=\"where\">where\n    C: <a class=\"trait\" href=\"esri_json/geometry/trait.Coord.html\" title=\"trait esri_json::geometry::Coord\">Coord</a> + for&lt;'a&gt; <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/convert/trait.From.html\" title=\"trait core::convert::From\">From</a>&lt;&amp;'a Coord&gt;,</div>",0]]]]);
+    if (window.register_implementors) {
+        window.register_implementors(implementors);
+    } else {
+        window.pending_implementors = implementors;
+    }
+})()
+//{"start":59,"fragment_lengths":[1524]}

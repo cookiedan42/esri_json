@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["PolygonSymbol3DLayers"],"struct":["PolygonSymbol3D","StyleOrigin"]};

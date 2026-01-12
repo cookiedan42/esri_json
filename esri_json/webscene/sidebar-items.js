@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["layers","symbol_3d"]};

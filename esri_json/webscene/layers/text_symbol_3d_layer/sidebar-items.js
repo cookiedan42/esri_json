@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Color","HorizontalAlignment","VerticalAlignment"],"mod":["font"],"struct":["Background","Halo","Material","TextSymbol3DLayer"]};
