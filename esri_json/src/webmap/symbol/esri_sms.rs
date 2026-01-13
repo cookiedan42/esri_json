@@ -34,31 +34,43 @@ pub struct EsriSMS {
 
 /// Builder pattern
 impl EsriSMS {
-    pub fn angle(mut self, angle: f64) -> Self {
+    pub const fn builder() -> Self {
+        Self {
+            _type: T,
+            angle: None,
+            color: None,
+            outline: None,
+            size: None,
+            style: None,
+            xoffset: None,
+            yoffset: None,
+        }
+    }
+    pub const fn angle(mut self, angle: f64) -> Self {
         self.angle = Some(angle);
         self
     }
-    pub fn color(mut self, color: Color) -> Self {
+    pub const fn color(mut self, color: Color) -> Self {
         self.color = Some(color);
         self
     }
-    pub fn outline(mut self, outline: Outline) -> Self {
+    pub const fn outline(mut self, outline: Outline) -> Self {
         self.outline = Some(outline);
         self
     }
-    pub fn size(mut self, size: f64) -> Self {
+    pub const fn size(mut self, size: f64) -> Self {
         self.size = Some(size);
         self
     }
-    pub fn style(mut self, style: Style) -> Self {
+    pub const fn style(mut self, style: Style) -> Self {
         self.style = Some(style);
         self
     }
-    pub fn xoffset(mut self, xoffset: f64) -> Self {
+    pub const fn xoffset(mut self, xoffset: f64) -> Self {
         self.xoffset = Some(xoffset);
         self
     }
-    pub fn yoffset(mut self, yoffset: f64) -> Self {
+    pub const fn yoffset(mut self, yoffset: f64) -> Self {
         self.yoffset = Some(yoffset);
         self
     }

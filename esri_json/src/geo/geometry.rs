@@ -1,9 +1,9 @@
 use crate::geometry::Coord;
 use crate::geometry::Geometry;
 
-impl<C> TryInto<Geometry<C>> for &geo_types::Geometry<f64>
+impl<C> TryInto<Geometry<C>> for geo_types::Geometry<f64>
 where
-    C: Coord + for<'a> std::convert::From<&'a geo::Coord>,
+    C: Coord + From<geo::Coord>,
 {
     type Error = String;
     fn try_into(self) -> Result<Geometry<C>, Self::Error> {
@@ -25,15 +25,5 @@ where
                 Err("GeometryCollection cannot be converted".to_string())
             }
         }
-    }
-}
-
-impl<C> TryInto<Geometry<C>> for geo_types::Geometry<f64>
-where
-    C: Coord + for<'a> std::convert::From<&'a geo::Coord>,
-{
-    type Error = String;
-    fn try_into(self) -> Result<Geometry<C>, Self::Error> {
-        (&self).try_into()
     }
 }

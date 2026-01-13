@@ -7,6 +7,7 @@ use crate::common::marker_type;
 use serde::{Deserialize, Serialize};
 
 pub use crate::common::Color;
+pub use crate::webmap::esri_sls as outline;
 pub use crate::webmap::esri_sls::EsriSLS as Outline;
 
 marker_type!(T, "esriSFS");
@@ -27,15 +28,24 @@ pub struct EsriSFS {
 
 /// Builder pattern
 impl EsriSFS {
-    pub fn color(mut self, color: Color) -> Self {
+    pub const fn builder() -> Self {
+        Self {
+            _type: T,
+            color: None,
+            outline: None,
+            style: None,
+        }
+    }
+
+    pub const fn color(mut self, color: Color) -> Self {
         self.color = Some(color);
         self
     }
-    pub fn outline(mut self, outline: Outline) -> Self {
+    pub const fn outline(mut self, outline: Outline) -> Self {
         self.outline = Some(outline);
         self
     }
-    pub fn style(mut self, style: Style) -> Self {
+    pub const fn style(mut self, style: Style) -> Self {
         self.style = Some(style);
         self
     }

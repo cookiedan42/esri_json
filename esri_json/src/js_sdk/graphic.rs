@@ -1,11 +1,9 @@
 //! Working with [Graphics Layer](https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-GraphicsLayer.html)
 
-mod popup_template;
 use std::fmt::Debug;
 
-use popup_template::PopupTemplate;
-
 use crate::geometry::{Coord, MultiPoint, Point, Polygon, Polyline};
+use crate::js_sdk::popup_template::PopupTemplate;
 use crate::webmap::{esri_sfs::EsriSFS, esri_sls::EsriSLS, esri_sms::EsriSMS};
 use crate::webscene::symbol_3d::{
     label_symbol_3d::LabelSymbol3D, line_symbol_3d::LineSymbol3D, mesh_symbol_3d::MeshSymbol3D,
@@ -15,26 +13,26 @@ use crate::webscene::symbol_3d::{
 use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};
 
-/// wow
+/// Used for pairing a geometry type with a symbol type.
 pub trait GeometrySymbolPair
 where
     Self::Symbol: Serialize + for<'de> Deserialize<'de> + Debug + Clone,
 {
     type Symbol;
 }
-impl<N: Coord> GeometrySymbolPair for Point<N> {
+impl<C: Coord> GeometrySymbolPair for Point<C> {
     /// [`PointSymbolSceneView`](crate::js_sdk::graphics_layer::PointSymbolSceneView)
     type Symbol = PointSymbolSceneView;
 }
-impl<N: Coord> GeometrySymbolPair for MultiPoint<N> {
+impl<C: Coord> GeometrySymbolPair for MultiPoint<C> {
     /// [`PointSymbolSceneView`](crate::js_sdk::graphics_layer::PointSymbolSceneView)
     type Symbol = PointSymbolSceneView;
 }
-impl<N: Coord> GeometrySymbolPair for Polyline<N> {
+impl<C: Coord> GeometrySymbolPair for Polyline<C> {
     /// [`PolylineSymbolSceneView`](crate::js_sdk::graphics_layer::PolylineSymbolSceneView)
     type Symbol = PolylineSymbolSceneView;
 }
-impl<N: Coord> GeometrySymbolPair for Polygon<N> {
+impl<C: Coord> GeometrySymbolPair for Polygon<C> {
     /// [`PolygonSymbolSceneView`](crate::js_sdk::graphics_layer::PolygonSymbolSceneView)
     type Symbol = PolygonSymbolSceneView;
 }

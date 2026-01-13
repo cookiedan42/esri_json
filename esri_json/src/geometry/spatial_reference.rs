@@ -17,19 +17,28 @@ pub struct SpatialReference {
 
 /// Builder pattern
 impl SpatialReference {
-    pub fn wkid(mut self, wkid: u32) -> Self {
+    pub const fn builder() -> Self {
+        Self {
+            wkid: None,
+            latest_vcs_wkid: None,
+            latest_wkid: None,
+            vcs_wkid: None,
+            wkt: None,
+        }
+    }
+    pub const fn wkid(mut self, wkid: u32) -> Self {
         self.wkid = Some(wkid);
         self
     }
-    pub fn latest_vcs_wkid(mut self, latest_vcs_wkid: u32) -> Self {
+    pub const fn latest_vcs_wkid(mut self, latest_vcs_wkid: u32) -> Self {
         self.latest_vcs_wkid = Some(latest_vcs_wkid);
         self
     }
-    pub fn latest_wkid(mut self, latest_wkid: u32) -> Self {
+    pub const fn latest_wkid(mut self, latest_wkid: u32) -> Self {
         self.latest_wkid = Some(latest_wkid);
         self
     }
-    pub fn vcs_wkid(mut self, vcs_wkid: u32) -> Self {
+    pub const fn vcs_wkid(mut self, vcs_wkid: u32) -> Self {
         self.vcs_wkid = Some(vcs_wkid);
         self
     }

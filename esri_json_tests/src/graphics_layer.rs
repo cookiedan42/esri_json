@@ -4,7 +4,7 @@ mod test_simple_symbol {
 
     use crate::fixtures;
     use esri_json::geometry::CoordXy;
-    use esri_json::js_sdk::graphics_layer;
+    use esri_json::js_sdk::graphic;
     use serde_json::Map;
 
     #[test]
@@ -23,7 +23,7 @@ mod test_simple_symbol {
             .xoffset(1.0)
             .yoffset(1.0);
 
-        let _g = graphics_layer::Graphic::<Point<CoordXy>>::new(geometry)
+        let _g = graphic::Graphic::<Point<CoordXy>>::new(geometry)
             .attributes(Map::new())
             .symbol(sms);
     }
@@ -43,7 +43,7 @@ mod test_simple_symbol {
             .style(Style::esriSLSDot)
             .width(1.0);
 
-        let _g = graphics_layer::Graphic::<Polyline<CoordXy>>::new(geometry)
+        let _g = graphic::Graphic::<Polyline<CoordXy>>::new(geometry)
             .attributes(Map::new())
             .symbol(sls);
     }
@@ -60,7 +60,7 @@ mod test_simple_symbol {
             .outline(Outline::default())
             .style(Style::esriSFSSolid);
 
-        let _g = graphics_layer::Graphic::<Polygon<CoordXy>>::new(geometry)
+        let _g = graphic::Graphic::<Polygon<CoordXy>>::new(geometry)
             .attributes(Map::new())
             .symbol(sfs);
     }
@@ -72,7 +72,7 @@ mod test_polygon_symbol_3d {
 
     use crate::fixtures;
     use esri_json::geometry::{CoordXy, Polygon};
-    use esri_json::js_sdk::graphics_layer;
+    use esri_json::js_sdk::graphic;
     use esri_json::webscene::polygon_symbol_3d::{PolygonSymbol3D, StyleOrigin};
     use serde_json::Map;
 
@@ -96,7 +96,7 @@ mod test_polygon_symbol_3d {
 
         let layers: PolygonSymbol3D = layer.into();
 
-        let _g = graphics_layer::Graphic::<Polygon<CoordXy>>::new(geometry)
+        let _g = graphic::Graphic::<Polygon<CoordXy>>::new(geometry)
             .attributes(Map::new())
             .symbol(layers);
     }
@@ -127,7 +127,7 @@ mod test_polygon_symbol_3d {
 
         let layers: PolygonSymbol3D = layer.into();
 
-        let _g = graphics_layer::Graphic::<Polygon<CoordXy>>::new(geometry)
+        let _g = graphic::Graphic::<Polygon<CoordXy>>::new(geometry)
             .attributes(Map::new())
             .symbol(layers);
     }
@@ -164,7 +164,7 @@ mod test_polygon_symbol_3d {
 
         let layers: PolygonSymbol3D = layer.into();
 
-        let _g = graphics_layer::Graphic::<Polygon<CoordXy>>::new(geometry)
+        let _g = graphic::Graphic::<Polygon<CoordXy>>::new(geometry)
             .attributes(Map::new())
             .symbol(layers);
     }
@@ -202,7 +202,7 @@ mod test_polygon_symbol_3d {
 
         let layers: PolygonSymbol3D = layer.into();
 
-        let _g = graphics_layer::Graphic::<Polygon<CoordXy>>::new(geometry)
+        let _g = graphic::Graphic::<Polygon<CoordXy>>::new(geometry)
             .attributes(Map::new())
             .symbol(layers);
     }
@@ -221,7 +221,7 @@ mod test_polygon_symbol_3d {
 
         let layers: PolygonSymbol3D = layer.into();
 
-        let _g = graphics_layer::Graphic::<Polygon<CoordXy>>::new(geometry)
+        let _g = graphic::Graphic::<Polygon<CoordXy>>::new(geometry)
             .attributes(Map::new())
             .symbol(layers);
     }
@@ -265,7 +265,7 @@ mod test_polygon_symbol_3d {
             .symbol_layers(vec![extrude_layer.into(), water_layer.into()])
             .style_origin(style_origin);
 
-        let _g = graphics_layer::Graphic::<Polygon<CoordXy>>::new(geometry)
+        let _g = graphic::Graphic::<Polygon<CoordXy>>::new(geometry)
             .attributes(Map::new())
             .symbol(layers);
     }
@@ -276,7 +276,7 @@ mod test_polygon_symbol_3d {
 mod test_polyline_symbol_3d {
     use crate::fixtures;
     use esri_json::geometry::{CoordXy, Polyline};
-    use esri_json::js_sdk::graphics_layer;
+    use esri_json::js_sdk::graphic;
     use esri_json::webscene::line_symbol_3d::LineSymbol3D;
     use serde_json::Map;
 
@@ -305,7 +305,7 @@ mod test_polyline_symbol_3d {
 
         let layers: LineSymbol3D = layer.into();
 
-        let _g = graphics_layer::Graphic::<Polyline<CoordXy>>::new(geometry)
+        let _g = graphic::Graphic::<Polyline<CoordXy>>::new(geometry)
             .attributes(Map::new())
             .symbol(layers);
     }
@@ -335,7 +335,7 @@ mod test_polyline_symbol_3d {
 
         let layers: LineSymbol3D = layer.into();
 
-        let _g = graphics_layer::Graphic::<Polyline<CoordXy>>::new(geometry)
+        let _g = graphic::Graphic::<Polyline<CoordXy>>::new(geometry)
             .attributes(Map::new())
             .symbol(layers);
     }
@@ -346,7 +346,7 @@ mod test_polyline_symbol_3d {
 mod test_point_symbol_3d {
     use crate::fixtures;
     use esri_json::geometry::{CoordXy, Point};
-    use esri_json::js_sdk::graphics_layer;
+    use esri_json::js_sdk::graphic;
     use esri_json::webscene::point_symbol_3d::PointSymbol3D;
     use serde_json::Map;
 
@@ -382,7 +382,7 @@ mod test_point_symbol_3d {
 
         let layers: PointSymbol3D = layer.into();
 
-        let _g = graphics_layer::Graphic::<Point<CoordXy>>::new(geometry)
+        let _g = graphic::Graphic::<Point<CoordXy>>::new(geometry)
             .attributes(Map::new())
             .symbol(layers);
     }
@@ -420,7 +420,7 @@ mod test_point_symbol_3d {
 
         let layers: PointSymbol3D = layer.into();
 
-        let _g = graphics_layer::Graphic::<Point<CoordXy>>::new(geometry)
+        let _g = graphic::Graphic::<Point<CoordXy>>::new(geometry)
             .attributes(Map::new())
             .symbol(layers);
     }
@@ -468,7 +468,7 @@ mod test_point_symbol_3d {
 
         let layers: PointSymbol3D = layer.into();
 
-        let _g = graphics_layer::Graphic::<Point<CoordXy>>::new(geometry)
+        let _g = graphic::Graphic::<Point<CoordXy>>::new(geometry)
             .attributes(Map::new())
             .symbol(layers);
     }
@@ -479,7 +479,7 @@ mod test_point_symbol_3d {
 mod test_multipoint_symbol_3d {
     use crate::fixtures;
     use esri_json::geometry::{CoordXy, MultiPoint};
-    use esri_json::js_sdk::graphics_layer;
+    use esri_json::js_sdk::graphic;
     use esri_json::webscene::point_symbol_3d::PointSymbol3D;
     use serde_json::Map;
 
@@ -514,7 +514,7 @@ mod test_multipoint_symbol_3d {
             .size(1.0);
         let layers: PointSymbol3D = layer.into();
 
-        let _g = graphics_layer::Graphic::<MultiPoint<CoordXy>>::new(geometry)
+        let _g = graphic::Graphic::<MultiPoint<CoordXy>>::new(geometry)
             .attributes(Map::new())
             .symbol(layers);
     }
@@ -552,7 +552,7 @@ mod test_multipoint_symbol_3d {
 
         let layers: PointSymbol3D = layer.into();
 
-        let _g = graphics_layer::Graphic::<MultiPoint<CoordXy>>::new(geometry)
+        let _g = graphic::Graphic::<MultiPoint<CoordXy>>::new(geometry)
             .attributes(Map::new())
             .symbol(layers);
     }
@@ -600,7 +600,7 @@ mod test_multipoint_symbol_3d {
 
         let layers: PointSymbol3D = layer.into();
 
-        let _g = graphics_layer::Graphic::<MultiPoint<CoordXy>>::new(geometry)
+        let _g = graphic::Graphic::<MultiPoint<CoordXy>>::new(geometry)
             .attributes(Map::new())
             .symbol(layers);
     }
@@ -611,7 +611,7 @@ mod test_multipoint_symbol_3d {
 mod test_label_layer {
     use crate::fixtures;
     use esri_json::geometry::CoordXy;
-    use esri_json::js_sdk::graphics_layer;
+    use esri_json::js_sdk::graphic;
     use esri_json::webscene::label_symbol_3d::*;
     use esri_json::webscene::text_symbol_3d_layer::*;
     use serde_json::Map;
@@ -655,16 +655,16 @@ mod test_label_layer {
 
         let layers: LabelSymbol3D = layer.into();
 
-        let _g1 = graphics_layer::Graphic::new(fixtures::default_point::<CoordXy>())
+        let _g1 = graphic::Graphic::new(fixtures::default_point::<CoordXy>())
             .attributes(Map::new())
             .symbol(layers.clone());
-        let _g2 = graphics_layer::Graphic::new(fixtures::default_multipoint::<CoordXy>())
+        let _g2 = graphic::Graphic::new(fixtures::default_multipoint::<CoordXy>())
             .attributes(Map::new())
             .symbol(layers.clone());
-        let _g3 = graphics_layer::Graphic::new(fixtures::default_polyline::<CoordXy>())
+        let _g3 = graphic::Graphic::new(fixtures::default_polyline::<CoordXy>())
             .attributes(Map::new())
             .symbol(layers.clone());
-        let _g4 = graphics_layer::Graphic::new(fixtures::default_polygon::<CoordXy>())
+        let _g4 = graphic::Graphic::new(fixtures::default_polygon::<CoordXy>())
             .attributes(Map::new())
             .symbol(layers.clone());
     }

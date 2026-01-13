@@ -21,9 +21,9 @@ pub use spatial_reference::SpatialReference;
 /// Union type of all Geometry types
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 #[serde(untagged)]
-pub enum Geometry<N: Coord> {
-    Point(Point<N>),
-    MultiPoint(MultiPoint<N>),
-    Polyline(Polyline<N>),
-    Polygon(Polygon<N>),
+pub enum Geometry<C: Coord> {
+    Point(Point<C>),
+    MultiPoint(MultiPoint<C>),
+    Polyline(Polyline<C>),
+    Polygon(Polygon<C>),
 }

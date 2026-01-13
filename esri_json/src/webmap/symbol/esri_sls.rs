@@ -17,27 +17,41 @@ pub struct EsriSLS {
     #[serde(rename = "type")]
     _type: T,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     color: Option<Color>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     marker: Option<Marker>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     style: Option<Style>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     width: Option<f64>,
 }
 
 /// Builder pattern
 impl EsriSLS {
-    pub fn color(mut self, color: Color) -> Self {
+    pub const fn builder() -> Self {
+        Self {
+            _type: T,
+            color: None,
+            marker: None,
+            style: None,
+            width: None,
+        }
+    }
+
+    pub const fn color(mut self, color: Color) -> Self {
         self.color = Some(color);
         self
     }
-    pub fn marker(mut self, marker: Marker) -> Self {
+    pub const fn marker(mut self, marker: Marker) -> Self {
         self.marker = Some(marker);
         self
     }
-    pub fn style(mut self, style: Style) -> Self {
+    pub const fn style(mut self, style: Style) -> Self {
         self.style = Some(style);
         self
     }
-    pub fn width(mut self, width: f64) -> Self {
+    pub const fn width(mut self, width: f64) -> Self {
         self.width = Some(width);
         self
     }

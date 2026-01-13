@@ -1,40 +1,40 @@
 use esri_json::geometry::*;
 
-pub fn default_point<N: Coord>() -> Point<N> {
-    Point::new(N::from_coord_fields(0.0, 0.0, Some(0.0), None), None)
+pub fn default_point<C: Coord>() -> Point<C> {
+    Point::new(C::from_coord_fields(0.0, 0.0, Some(0.0), None), None)
 }
 
-pub fn default_multipoint<N: Coord>() -> MultiPoint<N> {
+pub fn default_multipoint<C: Coord>() -> MultiPoint<C> {
     MultiPoint::new(
         vec![
-            N::from_coord_fields(0.0, 0.0, Some(0.0), None),
-            N::from_coord_fields(1.0, 1.0, Some(0.0), None),
+            C::from_coord_fields(0.0, 0.0, Some(0.0), None),
+            C::from_coord_fields(1.0, 1.0, Some(0.0), None),
         ],
         None,
     )
 }
 
-fn default_linestring<N: Coord>() -> LineString<N> {
+fn default_linestring<C: Coord>() -> LineString<C> {
     LineString::new(vec![
-        N::from_coord_fields(0.0, 0.0, Some(0.0), None),
-        N::from_coord_fields(1.0, 1.0, Some(1.0), None),
+        C::from_coord_fields(0.0, 0.0, Some(0.0), None),
+        C::from_coord_fields(1.0, 1.0, Some(1.0), None),
     ])
 }
 
-pub fn default_polyline<N: Coord>() -> Polyline<N> {
-    Polyline::new(vec![default_linestring::<N>()], None)
+pub fn default_polyline<C: Coord>() -> Polyline<C> {
+    Polyline::new(vec![default_linestring::<C>()], None)
 }
 
-fn default_ring<N: Coord>() -> LineString<N> {
+fn default_ring<C: Coord>() -> LineString<C> {
     LineString::new(vec![
-        N::from_coord_fields(0.0, 0.0, None, None),
-        N::from_coord_fields(1.0, 0.0, None, None),
-        N::from_coord_fields(1.0, 1.0, None, None),
-        N::from_coord_fields(0.0, 1.0, None, None),
-        N::from_coord_fields(0.0, 0.0, None, None),
+        C::from_coord_fields(0.0, 0.0, None, None),
+        C::from_coord_fields(1.0, 0.0, None, None),
+        C::from_coord_fields(1.0, 1.0, None, None),
+        C::from_coord_fields(0.0, 1.0, None, None),
+        C::from_coord_fields(0.0, 0.0, None, None),
     ])
 }
 
-pub fn default_polygon<N: Coord>() -> Polygon<N> {
-    Polygon::new(vec![default_ring::<N>()], None)
+pub fn default_polygon<C: Coord>() -> Polygon<C> {
+    Polygon::new(vec![default_ring::<C>()], None)
 }

@@ -1,5 +1,8 @@
 //! <https://developers.arcgis.com/javascript/latest/api-reference/esri-PopupTemplate.html>
 
+// TODO: base impl on this shape?
+// https://developers.arcgis.com/web-scene-specification/objects/popupElement/
+
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Serialize, Deserialize, Debug, PartialEq, Default)]

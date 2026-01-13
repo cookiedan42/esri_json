@@ -2,35 +2,61 @@ use crate::geometry::{Coord, LineString, SpatialReference};
 use serde::{Deserialize, Serialize, ser::SerializeMap};
 /// Representation of a [Polyline](https://developers.arcgis.com/web-scene-specification/objects/polyline_geometry/)
 #[derive(Deserialize, Debug, Clone, PartialEq)]
-pub struct Polyline<N: Coord> {
+pub struct Polyline<C: Coord> {
     #[serde(rename = "spatialReference")]
     spatial_reference: Option<SpatialReference>,
-    paths: Vec<LineString<N>>,
+    paths: Vec<LineString<C>>,
+    #[serde(skip_serializing_if = "Option::is_none", rename = "hasM")]
+    has_m: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none", rename = "hasZ")]
+    has_z: Option<bool>,
 }
 
-impl<N: Coord> Polyline<N> {
-    pub fn new(paths: Vec<LineString<N>>, spatial_reference: Option<SpatialReference>) -> Self {
+impl<C: Coord> Polyline<C> {
+    pub fn new(paths: Vec<LineString<C>>, spatial_reference: Option<SpatialReference>) -> Self {
         Self {
             spatial_reference,
             paths,
+            has_m: C::has_m_field(),
+            has_z: C::has_z_field(),
         }
     }
-    pub fn paths(&self) -> &Vec<LineString<N>> {
+    pub fn paths(&self) -> &Vec<LineString<C>> {
         &self.paths
+    }
+    pub fn set_spatial_reference(&mut self, spatial_reference: Option<SpatialReference>) {
+        self.spatial_reference = spatial_reference;
+    }
+    pub fn set_z(self, z: f64) -> Self {
+        Self {
+            spatial_reference: self.spatial_reference,
+            paths: self.paths.into_iter().map(|c| c.set_z(z)).collect(),
+            has_m: C::has_m_field(),
+            has_z: C::has_z_field(),
+        }
     }
 }
 
-impl<N: Coord + Serialize> Serialize for Polyline<N> {
+impl<C: Coord> IntoIterator for Polyline<C> {
+    type Item = LineString<C>;
+    type IntoIter = std::vec::IntoIter<Self::Item>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.paths.into_iter()
+    }
+}
+
+impl<C: Coord + Serialize> Serialize for Polyline<C> {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
     {
         let mut map = serializer.serialize_map(Some(2))?;
 
-        if N::has_m() {
+        if C::has_m() {
             map.serialize_entry("hasM", &true)?;
         }
-        if N::has_z() {
+        if C::has_z() {
             map.serialize_entry("hasZ", &true)?;
         }
         map.serialize_entry("spatialReference", &self.spatial_reference)?;

@@ -1,43 +1,26 @@
 use crate::geometry::{Coord, LineString};
 
-impl<N: Coord> From<&LineString<N>> for geo_types::LineString<f64>
+impl<C: Coord> From<LineString<C>> for geo_types::LineString<f64>
 where
-    for<'a> &'a N: Into<geo_types::Coord<f64>>,
+    geo_types::Coord<f64>: From<C>,
 {
-    fn from(val: &LineString<N>) -> Self {
+    fn from(val: LineString<C>) -> Self {
         geo_types::LineString::<f64>::from_iter(
-            val.points().iter().map(Into::<geo_types::Coord>::into),
+            val.0.into_iter().map(Into::<geo_types::Coord>::into),
         )
     }
 }
 
-impl<N: Coord> From<LineString<N>> for geo_types::LineString<f64>
+impl<C: Coord> From<geo_types::LineString<f64>> for LineString<C>
 where
-    for<'a> &'a N: Into<geo_types::Coord<f64>>,
-{
-    fn from(val: LineString<N>) -> Self {
-        (&val).into()
-    }
-}
-
-impl<N: Coord> From<&geo_types::LineString<f64>> for LineString<N>
-where
-    for<'a> N: From<&'a geo_types::Coord<f64>>,
-{
-    fn from(line_string: &geo_types::LineString<f64>) -> Self {
-        let a: Vec<N> = line_string
-            .coords()
-            .map(From::<&geo_types::Coord<f64>>::from)
-            .collect::<Vec<_>>();
-        LineString::<N>::new(a)
-    }
-}
-
-impl<N: Coord> From<geo_types::LineString<f64>> for LineString<N>
-where
-    for<'a> N: From<&'a geo_types::Coord<f64>>,
+    C: From<geo_types::Coord<f64>>,
 {
     fn from(line_string: geo_types::LineString<f64>) -> Self {
-        (&line_string).into()
+        let a: Vec<C> = line_string
+            .0
+            .into_iter()
+            .map(From::<geo_types::Coord<f64>>::from)
+            .collect::<Vec<_>>();
+        LineString::<C>::new(a)
     }
 }

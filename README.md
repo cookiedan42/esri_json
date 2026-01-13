@@ -13,7 +13,7 @@ Inspired by the [`serde_esri`](https://github.com/JosiahParry/serde_esri) crate
     - Basic Geometry types
     - Reading and writing a [Graphic](https://developers.arcgis.com/javascript/latest/api-reference/esri-Graphic.html) for display in a [WebScene](https://developers.arcgis.com/javascript/latest/api-reference/esri-WebScene.html)
 1. Geometry conversion between Esri JSON and [`geo_types`](https://docs.rs/geo-types/0.7.18/geo_types/)
-
+    - under the `geo_type` feature flag
 
 ## Example
 ```rust 

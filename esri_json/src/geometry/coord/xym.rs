@@ -2,7 +2,7 @@ use crate::geometry::Coord;
 use serde::{Deserialize, Serialize};
 
 /// Base Coordinate type with X and Y coordinates and an optional Measure value
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Copy)]
 #[serde(into = "Vec<f64>", from = "Vec<f64>")]
 pub struct CoordXym {
     x: f64,
@@ -57,13 +57,6 @@ impl Coord for CoordXym {
     }
     fn m(&self) -> Option<f64> {
         self.m
-    }
-    fn from_coord<C: Coord>(c: C) -> Self {
-        Self {
-            x: c.x(),
-            y: c.y(),
-            m: c.m(),
-        }
     }
     fn from_coord_fields(x: f64, y: f64, _z: Option<f64>, m: Option<f64>) -> Self {
         Self { x, y, m }

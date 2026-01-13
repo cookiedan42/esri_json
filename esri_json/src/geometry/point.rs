@@ -3,18 +3,23 @@ use serde::{Deserialize, Serialize};
 
 /// Representation of a [Point](https://developers.arcgis.com/web-scene-specification/objects/point_geometry/)  
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
-pub struct Point<N: Coord> {
+#[serde(into = "PointHelper", from = "PointHelper")]
+pub struct Point<C: Coord> {
     #[serde(rename = "spatialReference")]
     spatial_reference: Option<SpatialReference>,
-    #[serde(flatten)]
-    coord: N,
+    // #[serde(flatten)]
+    coord: C,
+    has_m: Option<bool>,
+    has_z: Option<bool>,
 }
 
-impl<N: Coord> Point<N> {
-    pub fn new(coord: N, spatial_reference: Option<SpatialReference>) -> Self {
+impl<C: Coord> Point<C> {
+    pub fn new(coord: C, spatial_reference: Option<SpatialReference>) -> Self {
         Self {
             coord,
             spatial_reference,
+            has_m: C::has_m_field(),
+            has_z: C::has_z_field(),
         }
     }
     pub fn x(&self) -> f64 {
@@ -29,40 +34,59 @@ impl<N: Coord> Point<N> {
     pub fn m(&self) -> Option<f64> {
         self.coord.m()
     }
+    pub fn set_spatial_reference(&mut self, spatial_reference: Option<SpatialReference>) {
+        self.spatial_reference = spatial_reference;
+    }
+    pub fn set_z(self, z: f64) -> Self {
+        Self {
+            coord: self.coord.set_z(z),
+            spatial_reference: self.spatial_reference,
+            has_m: C::has_m_field(),
+            has_z: C::has_z_field(),
+        }
+    }
 }
 
-// #[derive(Serialize, Deserialize)]
-// struct PointHelper {
-//     #[serde(rename = "spatialReference")]
-//     spatial_reference: Option<SpatialReference>,
-//     x: f64,
-//     y: f64,
-//     #[serde(skip_serializing_if = "Option::is_none")]
-//     z: Option<f64>,
-//     #[serde(skip_serializing_if = "Option::is_none")]
-//     m: Option<f64>,
-// }
+#[derive(Serialize, Deserialize)]
+struct PointHelper {
+    #[serde(rename = "spatialReference")]
+    spatial_reference: Option<SpatialReference>,
+    x: f64,
+    y: f64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    z: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    m: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none", rename = "hasM")]
+    has_m: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none", rename = "hasZ")]
+    has_z: Option<bool>,
+}
 
-// impl<N: Coord> From<PointHelper> for Point<N> {
-//     fn from(helper: PointHelper) -> Self {
-//         Point {
-//             spatial_reference: helper.spatial_reference,
-//             coord: N::from_coord(helper),
-//         }
-//     }
-// }
+impl<C: Coord> From<PointHelper> for Point<C> {
+    fn from(helper: PointHelper) -> Self {
+        Point {
+            spatial_reference: helper.spatial_reference,
+            coord: C::from_coord_fields(helper.x, helper.y, helper.z, helper.m),
+            has_m: C::has_m_field(),
+            has_z: C::has_z_field(),
+        }
+    }
+}
 
-// impl<N: Coord> From<Point<N>> for PointHelper {
-//     fn from(val: Point<N>) -> Self {
-//         PointHelper {
-//             spatial_reference: val.spatial_reference,
-//             x: val.coord.x(),
-//             y: val.coord.y(),
-//             z: val.coord.z(),
-//             m: val.coord.m(),
-//         }
-//     }
-// }
+impl<C: Coord> From<Point<C>> for PointHelper {
+    fn from(val: Point<C>) -> Self {
+        PointHelper {
+            spatial_reference: val.spatial_reference,
+            x: val.coord.x(),
+            y: val.coord.y(),
+            z: val.coord.z(),
+            m: val.coord.m(),
+            has_m: C::has_m_field(),
+            has_z: C::has_z_field(),
+        }
+    }
+}
 
 #[cfg(test)]
 mod tests {

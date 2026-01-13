@@ -1,3 +1,4 @@
+use geo::winding_order::WindingOrder;
 use geo::{BooleanOps, Intersects, Orient, Winding, unary_union};
 
 use crate::geometry::{Coord, LineString, Polygon};
@@ -23,162 +24,108 @@ assuming that all rings are non-intersecting
 for each ring, identify handedness and tag it
 for each ring, identify holes
 */
-fn is_exterior_ring(ring: &geo_types::LineString<f64>) -> bool {
-    ring.is_cw()
-}
 
 // given a known exterior and potential holes, construct the polygon
 // ensures that holes fully within other holes are removed
 // ensures holes around the exterior are removed
 fn make_polygon(
-    exterior: &geo_types::LineString<f64>,
+    exterior: geo_types::LineString<f64>,
     holes: &[geo_types::LineString<f64>],
 ) -> geo_types::Polygon<f64> {
     let ext = geo_types::Polygon::<f64>::new(exterior.clone(), vec![]);
 
-    let candidates = holes
+    let candidate_polygons = holes
         .iter()
         .filter(|&hole| hole.intersects(&ext))
-        .collect::<Vec<_>>();
-    // all remaining holes are inside the exterior
-
-    let candidate_polygons = candidates
-        .iter()
         .map(|candidate| geo_types::Polygon::<f64>::new((*candidate).clone(), vec![]))
         .collect::<Vec<_>>();
     let k = unary_union(&candidate_polygons);
     let c = k
-        .iter()
-        .map(|poly| poly.exterior())
-        .cloned()
+        .into_iter()
+        .map(|poly| {
+            poly.exterior()
+                .clone_to_winding_order(WindingOrder::CounterClockwise)
+        })
         .collect::<Vec<_>>();
-    // all holes are non-intersecting
-    geo_types::Polygon::<f64>::new(exterior.clone(), c)
+    geo_types::Polygon::<f64>::new(exterior, c)
 }
 
-impl<N: Coord> From<&Polygon<N>> for geo_types::MultiPolygon<f64>
+impl<C: Coord> From<Polygon<C>> for geo_types::MultiPolygon<f64>
 where
-    N: Into<geo_types::Coord<f64>>,
-    for<'a> &'a LineString<N>: Into<geo_types::LineString<f64>>,
+    geo_types::Coord<f64>: From<C>,
+    geo_types::LineString<f64>: From<LineString<C>>,
 {
-    fn from(val: &Polygon<N>) -> Self {
+    fn from(val: Polygon<C>) -> Self {
         if val.rings().len() == 1 {
-            let ring = (&val.rings()[0]).into();
+            let ring = val
+                .into_iter()
+                .map(Into::<geo_types::LineString<f64>>::into)
+                .next()
+                .expect("Expected single ring");
             let p = geo_types::Polygon::<f64>::new(ring, vec![]);
             return geo_types::MultiPolygon::new(vec![p]);
         }
 
-        let exteriors = val
-            .rings()
-            .iter()
+        let (exteriors, interiors): (Vec<_>, Vec<_>) = val
+            .into_iter()
             .map(Into::<geo_types::LineString<f64>>::into)
-            .filter(is_exterior_ring);
+            .partition(Winding::is_cw);
 
-        let interiors = val
-            .rings()
-            .iter()
-            .map(Into::<geo_types::LineString<f64>>::into)
-            .filter(|r| !is_exterior_ring(r))
-            .collect::<Vec<_>>();
-
-        let components = exteriors.map(|e| make_polygon(&e, &interiors));
+        let components = exteriors.into_iter().map(|e| make_polygon(e, &interiors));
 
         geo_types::MultiPolygon::from_iter(components)
     }
 }
 
-/*
-geo_types --> esri
-
-orient exterior ring to be clockwise
-orient holes to be counterclockwise
-concatenate all rings into a single array
-return array of rings as result
-*/
-
-impl<N: Coord> From<&geo_types::MultiPolygon<f64>> for Polygon<N>
+impl<C: Coord> From<geo_types::MultiPolygon<f64>> for Polygon<C>
 where
-    for<'a> N: From<&'a geo::Coord>,
-{
-    fn from(polygon: &geo_types::MultiPolygon<f64>) -> Self {
-        let a = polygon
-            .iter()
-            .flat_map(orient_reversed::<N>)
-            .collect::<Vec<_>>();
-        Polygon::<N>::new(a, None)
-    }
-}
-impl<N: Coord> From<geo_types::MultiPolygon<f64>> for Polygon<N>
-where
-    for<'a> N: From<&'a geo::Coord>,
+    C: From<geo::Coord>,
 {
     fn from(polygon: geo_types::MultiPolygon<f64>) -> Self {
-        (&polygon).into()
+        let a = polygon
+            .into_iter()
+            .flat_map(orient_reversed::<C>)
+            .collect::<Vec<_>>();
+        Polygon::<C>::new(a, None)
     }
 }
 
-impl<N: Coord> From<&geo_types::Polygon<f64>> for Polygon<N>
+impl<C: Coord> From<geo_types::Polygon<f64>> for Polygon<C>
 where
-    for<'a> N: From<&'a geo::Coord>,
-{
-    fn from(polygon: &geo_types::Polygon<f64>) -> Self {
-        Polygon::<N>::new(orient_reversed(polygon), None)
-    }
-}
-
-impl<N: Coord> From<geo_types::Polygon<f64>> for Polygon<N>
-where
-    for<'a> N: From<&'a geo::Coord>,
+    C: From<geo::Coord>,
 {
     fn from(polygon: geo_types::Polygon<f64>) -> Self {
-        (&polygon).into()
+        Polygon::<C>::new(orient_reversed(polygon), None)
     }
 }
 
-impl<N: Coord> From<&geo_types::Rect<f64>> for Polygon<N>
+impl<C: Coord> From<geo_types::Rect<f64>> for Polygon<C>
 where
-    for<'a> N: From<&'a geo::Coord>,
-{
-    fn from(polygon: &geo_types::Rect<f64>) -> Self {
-        polygon.to_polygon().into()
-    }
-}
-
-impl<N: Coord> From<geo_types::Rect<f64>> for Polygon<N>
-where
-    for<'a> N: From<&'a geo::Coord>,
+    C: From<geo::Coord>,
 {
     fn from(polygon: geo_types::Rect<f64>) -> Self {
-        (&polygon).into()
-    }
-}
-
-impl<N: Coord> From<&geo_types::Triangle<f64>> for Polygon<N>
-where
-    for<'a> N: From<&'a geo::Coord>,
-{
-    fn from(polygon: &geo_types::Triangle<f64>) -> Self {
         polygon.to_polygon().into()
     }
 }
 
-impl<N: Coord> From<geo_types::Triangle<f64>> for Polygon<N>
+impl<C: Coord> From<geo_types::Triangle<f64>> for Polygon<C>
 where
-    for<'a> N: From<&'a geo::Coord>,
+    C: From<geo::Coord>,
 {
     fn from(polygon: geo_types::Triangle<f64>) -> Self {
-        (&polygon).into()
+        polygon.to_polygon().into()
     }
 }
 
 /// Orient a polygon to be clockwise external rings and counterclockwise holes
 /// Prepares for conversion to Esri geometry
-fn orient_reversed<N>(polygon: &geo_types::Polygon<f64>) -> Vec<LineString<N>>
+fn orient_reversed<C>(polygon: geo_types::Polygon<f64>) -> Vec<LineString<C>>
 where
-    for<'a> N: Coord + From<&'a geo::Coord>,
+    C: Coord + From<geo::Coord>,
 {
     let p = polygon.orient(geo::orient::Direction::Reversed);
     p.rings()
-        .map(Into::<LineString<N>>::into)
+        .cloned()
+        .map(Into::<LineString<C>>::into)
         .collect::<Vec<_>>()
 }
