@@ -4,7 +4,7 @@
 //!
 //! ```
 //! use esri_json::geometry::{Coord,CoordXy,Point};
-//! use esri_json::js_sdk::graphics_layer;
+//! use esri_json::js_sdk::graphic;
 //! use esri_json::webmap::esri_sms::*;
 //! use serde_json::Map;
 //!
@@ -19,7 +19,7 @@
 //!     .xoffset(1.0)
 //!     .yoffset(1.0);
 //!
-//! let _g = graphics_layer::Graphic::<Point<CoordXy>>::new(geometry)
+//! let _g = graphic::Graphic::<Point<CoordXy>>::new(geometry)
 //!     .attributes(Map::new())
 //!     .symbol(sms);
 //! ```
