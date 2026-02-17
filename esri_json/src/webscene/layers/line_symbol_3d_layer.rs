@@ -38,35 +38,45 @@ pub struct LineSymbol3DLayer {
 /// Builder pattern
 impl LineSymbol3DLayer {
     /// Shape of the tips at the start and end of each line geometry. This also applies to the tips of each pattern segment along the line
-    pub fn cap(mut self, cap: LineCap) -> Self {
+    pub const fn cap(mut self, cap: LineCap) -> Self {
         self.cap = Some(cap);
         self
     }
     /// Shape of the intersection of two line segments
-    pub fn join(mut self, join: LineJoin) -> Self {
+    pub const fn join(mut self, join: LineJoin) -> Self {
         self.join = Some(join);
         self
     }
     /// Represents markers placed at the start and end of each line geometry, or both
-    pub fn marker(mut self, marker: LineMarker) -> Self {
+    pub const fn marker(mut self, marker: LineMarker) -> Self {
         self.marker = Some(marker);
         self
     }
     /// The material used to shade the geometry
-    pub fn material(mut self, material: Material) -> Self {
+    pub const fn material(mut self, material: Material) -> Self {
         self.material = Some(material);
         self
     }
     /// A pattern used to render a line
     pub fn pattern(mut self, pattern: LinePattern) -> Self {
+        // into is not const
         self.pattern = Some(pattern.into());
         self
     }
     /// Line width in points, positive only
-    pub fn size(mut self, size: PxOrPt) -> Self {
-        // Todo: enforce this constraint
-        self.size = Some(size);
-        self
+    pub const fn size(mut self, size: PxOrPt) -> Result<Self, &'static str> {
+        let num = match size {
+            PxOrPt::Numeric(s) => s,
+            PxOrPt::Pixels(s) => s,
+            PxOrPt::Points(s) => s,
+        };
+        if num < 0.0 {
+            // format is non-const
+            Err("Size must be positive")
+        } else {
+            self.size = Some(size);
+            Ok(self)
+        }
     }
 }
 

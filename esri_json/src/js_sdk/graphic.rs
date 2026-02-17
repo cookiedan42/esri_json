@@ -45,7 +45,7 @@ pub struct Graphic<G>
 where
     G: GeometrySymbolPair,
 {
-    geometry: G,
+    pub geometry: G,
     attributes: Map<String, Value>,
     // aggregateGeometries: Option<String>, // ignoring this field
     symbol: Option<G::Symbol>,

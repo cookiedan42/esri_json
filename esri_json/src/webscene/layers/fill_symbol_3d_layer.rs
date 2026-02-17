@@ -37,27 +37,28 @@ pub struct FillSymbol3DLayer {
 // Builder pattern
 impl FillSymbol3DLayer {
     /// Only used by mesh 3d
-    pub fn cast_shadows(mut self, cast_shadows: bool) -> Self {
+    pub const fn cast_shadows(mut self, cast_shadows: bool) -> Self {
         self.cast_shadows = Some(cast_shadows);
         self
     }
     /// Specifies an edge visualization style (only applies to [`MeshSymbol3D`](crate::webscene::mesh_symbol_3d::MeshSymbol3DLayers)). Edges describe the style applied to visually important edges of 3D objects.
-    pub fn edges(mut self, edges: Edges) -> Self {
+    pub const fn edges(mut self, edges: Edges) -> Self {
         self.edges = Some(edges);
         self
     }
     /// The material used to shade the geometry, including colorMixMode options.
-    pub fn material(mut self, material: Material) -> Self {
+    pub const fn material(mut self, material: Material) -> Self {
         self.material = Some(material);
         self
     }
     /// The outline of the symbol layer (only applies to [`PolygonSymbol3D`](crate::webscene::polygon_symbol_3d::PolygonSymbol3DLayers)).
-    pub fn outline(mut self, outline: Outline) -> Self {
+    pub const fn outline(mut self, outline: Outline) -> Self {
         self.outline = Some(outline);
         self
     }
     /// The pattern used to render the fill of the polygon [`PolygonSymbol3D`](crate::webscene::polygon_symbol_3d::PolygonSymbol3DLayers)).
     pub fn pattern(mut self, pattern: PolygonPattern) -> Self {
+        // not const because of `into`
         self.pattern = Some(pattern.into());
         self
     }

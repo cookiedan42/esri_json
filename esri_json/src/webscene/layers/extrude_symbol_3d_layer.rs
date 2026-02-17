@@ -30,19 +30,19 @@ pub struct ExtrudeSymbol3DLayer {
 
 /// Builder pattern
 impl ExtrudeSymbol3DLayer {
-    pub fn cast_shadows(mut self, cast_shadows: bool) -> Self {
+    pub const fn cast_shadows(mut self, cast_shadows: bool) -> Self {
         self.cast_shadows = Some(cast_shadows);
         self
     }
-    pub fn edges(mut self, edges: Edges) -> Self {
+    pub const fn edges(mut self, edges: Edges) -> Self {
         self.edges = Some(edges);
         self
     }
-    pub fn material(mut self, material: Material) -> Self {
+    pub const fn material(mut self, material: Material) -> Self {
         self.material = Some(material);
         self
     }
-    pub fn size(mut self, size: f64) -> Self {
+    pub const fn size(mut self, size: f64) -> Self {
         self.size = Some(size);
         self
     }

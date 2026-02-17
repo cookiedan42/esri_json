@@ -99,6 +99,8 @@ mod test_polygon_symbol_3d {
         let _g = graphic::Graphic::<Polygon<CoordXy>>::new(geometry)
             .attributes(Map::new())
             .symbol(layers);
+
+        println!("{}", serde_json::to_string(&_g).unwrap());
     }
 
     #[test]
@@ -301,7 +303,8 @@ mod test_polyline_symbol_3d {
             .marker(line_marker)
             .material(material)
             .pattern(LinePattern::Dash)
-            .size(PxOrPt::Points(10.0));
+            .size(PxOrPt::Points(10.0))
+            .unwrap();
 
         let layers: LineSymbol3D = layer.into();
 

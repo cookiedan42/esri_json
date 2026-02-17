@@ -37,7 +37,7 @@ pub struct IconSymbol3DLayer {
 /// Builder pattern
 impl IconSymbol3DLayer {
     /// Anchor Position
-    pub fn anchor(mut self, anchor: Anchor) -> Self {
+    pub const fn anchor(mut self, anchor: Anchor) -> Self {
         self.anchor = Some(anchor);
         self
     }
@@ -49,17 +49,17 @@ impl IconSymbol3DLayer {
         self
     }
     /// Rotation angle in degrees. The rotation is defined in screen space, with a rotation of 0 degrees (default value) pointing in the direction of the Y-axis. Positive values indicate clockwise rotation.
-    pub fn angle(mut self, angle: f64) -> Self {
+    pub const fn angle(mut self, angle: f64) -> Self {
         self.angle = Some(angle);
         self
     }
     /// The material used to shade the geometry.
-    pub fn material(mut self, material: Material) -> Self {
+    pub const fn material(mut self, material: Material) -> Self {
         self.material = Some(material);
         self
     }
     /// Sets properties of the outline of the IconSymbol3DLayer.
-    pub fn outline(mut self, outline: Outline) -> Self {
+    pub const fn outline(mut self, outline: Outline) -> Self {
         self.outline = Some(outline);
         self
     }
@@ -69,7 +69,7 @@ impl IconSymbol3DLayer {
         self
     }
     /// Icon size in points, positive only
-    pub fn size(mut self, size: f64) -> Self {
+    pub const fn size(mut self, size: f64) -> Self {
         // TODO: enforce this constraint
         self.size = Some(size);
         self
@@ -99,7 +99,7 @@ impl Resource {
         self
     }
     /// Specifies the type of symbol used.
-    pub fn primitive(mut self, primitive: IconPrimitive) -> Self {
+    pub const fn primitive(mut self, primitive: IconPrimitive) -> Self {
         self.primitive = Some(primitive);
         self
     }
@@ -147,18 +147,18 @@ pub struct Outline {
 /// Builder pattern
 impl Outline {
     /// Color is represented as a three or four-element array.
-    pub fn color(mut self, color: Color) -> Self {
+    pub const fn color(mut self, color: Color) -> Self {
         self.color = Some(color);
         self
     }
     /// Outline size in points, positive only
-    pub fn size(mut self, size: f64) -> Self {
+    pub const fn size(mut self, size: f64) -> Self {
         // TODO: enfornce this constraint
         self.size = Some(size);
         self
     }
     /// The value has to lie between 100 (full transparency) and 0 (full opacity).
-    pub fn transparency(mut self, transparency: f64) -> Self {
+    pub const fn transparency(mut self, transparency: f64) -> Self {
         // TODO: enforce this constaint
         self.transparency = Some(transparency);
         self

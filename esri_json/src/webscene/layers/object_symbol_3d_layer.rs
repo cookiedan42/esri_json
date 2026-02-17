@@ -45,19 +45,19 @@ pub struct ObjectSymbol3DLayer {
 /// Builder pattern
 impl ObjectSymbol3DLayer {
     /// The positioning of the object relative to the geometry
-    pub fn anchor(mut self, anchor: Anchor) -> Self {
+    pub const fn anchor(mut self, anchor: Anchor) -> Self {
         self.anchor = Some(anchor);
         self
     }
 
     /// When `anchor` is set to [`Anchor::Relative`], this property specifies the positioning of the object relative to the geometry as a fraction of the symbol layer's bounding box. Otherwise it is ignored.
-    pub fn anchor_position(mut self, position: [f64; 3]) -> Self {
+    pub const fn anchor_position(mut self, position: [f64; 3]) -> Self {
         self.anchor_position = Some(position);
         self
     }
 
     /// Boolean to control the shadow casting behaviour of the rendered geometries
-    pub fn cast_shadows(mut self, cast_shadows: bool) -> Self {
+    pub const fn cast_shadows(mut self, cast_shadows: bool) -> Self {
         self.cast_shadows = Some(cast_shadows);
         self
     }
@@ -72,7 +72,7 @@ impl ObjectSymbol3DLayer {
     }
 
     /// Rotation angle around Z axis in degrees. At 0 degrees, the model points in the direction of the Y-axis. Positive values indicate clockwise rotation (when looked at from the top)
-    pub fn heading(mut self, heading: f64) -> Self {
+    pub const fn heading(mut self, heading: f64) -> Self {
         self.heading = Some(heading);
         self
     }
@@ -87,7 +87,7 @@ impl ObjectSymbol3DLayer {
     }
 
     /// The material used to shade the geometry.
-    pub fn material(mut self, material: Material) -> Self {
+    pub const fn material(mut self, material: Material) -> Self {
         self.material = Some(material);
         self
     }
@@ -99,19 +99,20 @@ impl ObjectSymbol3DLayer {
     }
 
     /// Rotation angle around Y axis in degrees. At 0 degrees, the model is level. A positive value lifts the left part and lowers the right part of the model
-    pub fn roll(mut self, roll: f64) -> Self {
+    pub const fn roll(mut self, roll: f64) -> Self {
         self.roll = Some(roll);
         self
     }
 
     /// Rotation angle around X axis in degrees. At 0 degrees, the model is level. A positive value lifts the front and lowers the back of the model
-    pub fn tilt(mut self, tilt: f64) -> Self {
+    pub const fn tilt(mut self, tilt: f64) -> Self {
         self.tilt = Some(tilt);
         self
     }
 
     /// Object width in meters, positive only
     pub fn width(mut self, width: f64) -> Result<Self, String> {
+        // format is non-const
         if width <= 0.0 {
             return Err(format!("Width must be positive, got {}", width));
         }
@@ -145,7 +146,7 @@ impl Resource {
         self.href = Some(href);
         self
     }
-    pub fn primitive(mut self, primitive: ObjectPrimitive) -> Self {
+    pub const fn primitive(mut self, primitive: ObjectPrimitive) -> Self {
         self.primitive = Some(primitive);
         self
     }
