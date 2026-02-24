@@ -1,4 +1,5 @@
 use crate::geometry::Coord;
+use geo_traits::CoordTrait;
 use serde::{Deserialize, Serialize};
 
 /// Base Coordinate type with X and Y coordinates
@@ -38,19 +39,37 @@ impl From<Vec<f64>> for CoordXy {
 }
 
 impl Coord for CoordXy {
+    fn dim() -> geo_traits::Dimensions {
+        geo_traits::Dimensions::Xy
+    }
     fn has_z() -> bool {
         false
     }
     fn has_m() -> bool {
         false
     }
-    fn x(&self) -> f64 {
-        self.x
-    }
-    fn y(&self) -> f64 {
-        self.y
-    }
+
     fn from_coord_fields(x: f64, y: f64, _z: Option<f64>, _m: Option<f64>) -> Self {
         Self { x, y }
+    }
+}
+
+impl CoordTrait for CoordXy {
+    type T = f64;
+    fn x(&self) -> Self::T {
+        self.x
+    }
+    fn y(&self) -> Self::T {
+        self.y
+    }
+    fn dim(&self) -> geo_traits::Dimensions {
+        geo_traits::Dimensions::Xy
+    }
+    fn nth_or_panic(&self, n: usize) -> Self::T {
+        match n {
+            0 => self.x,
+            1 => self.y,
+            _ => panic!("Expected 2 values, got {}", n),
+        }
     }
 }

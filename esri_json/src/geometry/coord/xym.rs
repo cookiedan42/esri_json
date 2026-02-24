@@ -1,6 +1,6 @@
 use crate::geometry::Coord;
+use geo_traits::CoordTrait;
 use serde::{Deserialize, Serialize};
-
 /// Base Coordinate type with X and Y coordinates and an optional Measure value
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Copy)]
 #[serde(into = "Vec<f64>", from = "Vec<f64>")]
@@ -12,8 +12,8 @@ pub struct CoordXym {
 
 impl From<&CoordXym> for Vec<f64> {
     fn from(val: &CoordXym) -> Self {
-        if val.m.is_some() {
-            vec![val.x, val.y, val.m.unwrap()]
+        if let Some(m) = val.m {
+            vec![val.x, val.y, m]
         } else {
             vec![val.x, val.y]
         }
@@ -43,22 +43,40 @@ impl From<Vec<f64>> for CoordXym {
 }
 
 impl Coord for CoordXym {
+    fn dim() -> geo_traits::Dimensions {
+        geo_traits::Dimensions::Xym
+    }
     fn has_z() -> bool {
         false
     }
     fn has_m() -> bool {
         true
     }
-    fn x(&self) -> f64 {
-        self.x
-    }
-    fn y(&self) -> f64 {
-        self.y
-    }
     fn m(&self) -> Option<f64> {
         self.m
     }
     fn from_coord_fields(x: f64, y: f64, _z: Option<f64>, m: Option<f64>) -> Self {
         Self { x, y, m }
+    }
+}
+
+impl CoordTrait for CoordXym {
+    type T = f64;
+    fn x(&self) -> Self::T {
+        self.x
+    }
+    fn y(&self) -> Self::T {
+        self.y
+    }
+    fn dim(&self) -> geo_traits::Dimensions {
+        geo_traits::Dimensions::Xym
+    }
+    fn nth_or_panic(&self, n: usize) -> Self::T {
+        match n {
+            0 => self.x,
+            1 => self.y,
+            2 => self.m.unwrap_or(0.0),
+            _ => panic!("Expected 3 values, got {}", n),
+        }
     }
 }

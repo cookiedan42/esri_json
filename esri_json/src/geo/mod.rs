@@ -34,8 +34,8 @@
 //! The [`SpatialReference`](crate::geometry::SpatialReference) type is ignored when converting and will need to be set separately  
 //!
 
-mod coord;
-mod geometry;
+// mod coord;
+// mod geometry;
 mod linestring;
 mod multipoint;
 mod point;

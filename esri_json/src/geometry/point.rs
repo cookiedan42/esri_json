@@ -22,6 +22,9 @@ impl<C: Coord> Point<C> {
             has_z: C::has_z_field(),
         }
     }
+    pub fn coord(&self) -> &C {
+        &self.coord
+    }
     pub fn x(&self) -> f64 {
         self.coord.x()
     }

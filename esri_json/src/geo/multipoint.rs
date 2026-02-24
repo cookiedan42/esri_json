@@ -1,23 +1,20 @@
-use geo::CoordsIter;
-
+use crate::geo_types_n;
 use crate::geometry::{Coord, MultiPoint};
 
-impl<C: Coord> From<MultiPoint<C>> for geo_types::MultiPoint<f64>
-where
-    geo_types::Coord<f64>: From<C>,
-{
-    fn from(val: MultiPoint<C>) -> Self {
-        let a = val.into_iter().map(Into::<geo_types::Coord>::into);
-        geo_types::MultiPoint::<f64>::from_iter(a)
+impl<C: Coord> From<MultiPoint<C>> for geo_types_n::MultiPoint<C> {
+    fn from(value: MultiPoint<C>) -> Self {
+        Self(
+            value
+                .points()
+                .iter()
+                .map(|&c| geo_types_n::Point(c))
+                .collect::<Vec<_>>(),
+        )
     }
 }
 
-impl<C: Coord> From<geo_types::MultiPoint<f64>> for MultiPoint<C>
-where
-    C: From<geo_types::Coord<f64>>,
-{
-    fn from(point: geo_types::MultiPoint<f64>) -> Self {
-        let a: Vec<C> = point.coords_iter().map(Into::into).collect::<Vec<_>>();
-        MultiPoint::new(a, None)
+impl<C: Coord> From<geo_types_n::MultiPoint<C>> for MultiPoint<C> {
+    fn from(value: geo_types_n::MultiPoint<C>) -> Self {
+        Self::new(value.0.iter().map(|f| f.0).collect::<Vec<_>>(), None)
     }
 }

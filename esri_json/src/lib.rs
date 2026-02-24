@@ -30,7 +30,11 @@ pub(crate) mod common;
 #[cfg(feature = "geo_types")]
 pub mod geo;
 
+pub mod geojson;
+
 pub mod geometry;
 pub mod js_sdk;
 pub mod webmap;
 pub mod webscene;
+
+pub mod geo_types_n;

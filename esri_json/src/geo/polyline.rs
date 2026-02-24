@@ -1,54 +1,54 @@
+use crate::geo_types_n;
 use crate::geometry::{Coord, LineString, Polyline};
-
 // The only valid way to convert an esri Polyline to geo_types is to make it a MultiLineString
 // Subsequent decomposition to LineString can be done by user
 // But we can safely convert any of the 3 line type geometries to an esri Polyline
 
-impl<C: Coord> From<Polyline<C>> for geo_types::MultiLineString<f64>
+impl<C: Coord> From<Polyline<C>> for geo_types_n::MultiLineString<C>
 where
-    geo_types::Coord<f64>: From<C> + From<C>,
+    geo_types_n::LineString<C>: for<'a> From<&'a LineString<C>>,
 {
-    fn from(val: Polyline<C>) -> Self {
-        let a = val.into_iter().map(|path| {
-            path.into_iter()
-                .map(Into::<geo_types::Coord>::into)
-                .collect::<Vec<_>>()
-        });
-        geo_types::MultiLineString::<f64>::from_iter(a)
+    fn from(value: Polyline<C>) -> Self {
+        Self(
+            value
+                .paths()
+                .iter()
+                .map(Into::<geo_types_n::LineString<C>>::into)
+                .collect::<Vec<_>>(),
+        )
     }
 }
 
-impl<C: Coord> From<geo_types::MultiLineString<f64>> for Polyline<C>
+impl<C: Coord> From<geo_types_n::MultiLineString<C>> for Polyline<C>
 where
-    C: From<geo_types::Coord<f64>>,
+    LineString<C>: for<'a> From<&'a geo_types_n::LineString<C>>,
 {
-    fn from(line_string: geo_types::MultiLineString<f64>) -> Self {
-        let a = line_string
-            .into_iter()
-            .map(Into::<LineString<C>>::into)
-            .collect::<Vec<_>>();
-        Polyline::<C>::new(a, None)
+    fn from(value: geo_types_n::MultiLineString<C>) -> Self {
+        Polyline::<C>::new(
+            value
+                .0
+                .iter()
+                .map(Into::<LineString<C>>::into)
+                .collect::<Vec<_>>(),
+            None,
+        )
     }
 }
 
-impl<C: Coord> From<geo_types::LineString<f64>> for Polyline<C>
+impl<C: Coord> From<geo_types_n::LineString<C>> for Polyline<C>
 where
-    C: From<geo_types::Coord<f64>>,
+    LineString<C>: for<'a> From<&'a geo_types_n::LineString<C>>,
 {
-    fn from(line_string: geo_types::LineString<f64>) -> Self {
-        let a = vec![line_string.into()];
-        Polyline::<C>::new(a, None)
+    fn from(line_string: geo_types_n::LineString<C>) -> Self {
+        Polyline::<C>::new(vec![line_string.into()], None)
     }
 }
 
-impl<C: Coord> From<geo_types::Line<f64>> for Polyline<C>
-where
-    C: From<geo_types::Coord<f64>>,
-{
-    fn from(line_string: geo_types::Line<f64>) -> Self {
+impl<C: Coord> From<geo_types_n::Line<C>> for Polyline<C> {
+    fn from(line_string: geo_types_n::Line<C>) -> Self {
         let a = vec![LineString::<C>::new(vec![
-            (line_string.start).into(),
-            (line_string.end).into(),
+            line_string.start,
+            line_string.end,
         ])];
         Polyline::<C>::new(a, None)
     }

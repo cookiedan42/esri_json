@@ -1,6 +1,6 @@
 //! Primitive type for a Polyline
 
-use super::coord::Coord;
+use super::Coord;
 
 use serde::{Deserialize, Serialize};
 

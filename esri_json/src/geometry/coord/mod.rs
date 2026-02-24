@@ -8,10 +8,13 @@ pub use xym::CoordXym;
 pub use xyz::CoordXyz;
 pub use xyzm::CoordXyzm;
 
+use geo_traits::CoordTrait;
+
 /// Coord is the primitive type for all coordinate types
 /// It has no spatial reference
 /// Optional Z and M values
-pub trait Coord: Copy {
+pub trait Coord: Copy + CoordTrait<T = f64> {
+    fn dim() -> geo_traits::Dimensions;
     fn has_z() -> bool;
     fn has_m() -> bool;
 
@@ -22,8 +25,6 @@ pub trait Coord: Copy {
         if Self::has_z() { Some(true) } else { None }
     }
 
-    fn x(&self) -> f64;
-    fn y(&self) -> f64;
     fn z(&self) -> Option<f64> {
         None
     }
