@@ -55,30 +55,30 @@ impl<C: Coord> PolygonTrait for Polygon<C> {
     }
 }
 
-impl<C: Coord> From<&Polygon<C>> for geo_types::Polygon<f64>
+impl<C: Coord> From<&Polygon<C>> for geo_types::Polygon<C::T>
 where
-    geo_types::LineString<f64>: for<'a> From<&'a LineString<C>>,
+    geo_types::LineString<C::T>: for<'a> From<&'a LineString<C>>,
 {
     fn from(val: &Polygon<C>) -> Self {
         Self::new(
             (&val.exterior).into(),
             val.interiors
                 .iter()
-                .map(Into::<geo_types::LineString<f64>>::into)
+                .map(Into::<geo_types::LineString<C::T>>::into)
                 .collect(),
         )
     }
 }
-impl<C: Coord> From<&geo_types::Polygon<f64>> for Polygon<C>
+impl<C: Coord> From<&geo_types::Polygon<C::T>> for Polygon<C>
 where
-    LineString<C>: for<'a> From<&'a geo_types::LineString<f64>>,
+    LineString<C>: for<'a> From<&'a geo_types::LineString<C::T>>,
 {
-    fn from(val: &geo_types::Polygon<f64>) -> Self {
+    fn from(val: &geo_types::Polygon<C::T>) -> Self {
         Self::new(
             val.exterior().into(),
             val.interiors().iter().map(Into::into).collect(),
         )
     }
 }
-impl_from!(geo_types::Polygon<f64>, Polygon<C>);
-impl_from!(Polygon<C>, geo_types::Polygon<f64>);
+impl_from!(geo_types::Polygon<C::T>, Polygon<C>);
+impl_from!(Polygon<C>, geo_types::Polygon<C::T>);

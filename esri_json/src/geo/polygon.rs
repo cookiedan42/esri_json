@@ -31,8 +31,8 @@ for each ring, identify holes
 
 impl<C: Coord> From<Polygon<C>> for geo_types_n::MultiPolygon<C>
 where
-    geo_types::LineString<f64>: for<'a> From<&'a geo_types_n::LineString<C>>,
-    geo_types::Polygon<f64>: for<'a> From<&'a geo_types_n::Polygon<C>>,
+    geo_types::LineString<C::T>: for<'a> From<&'a geo_types_n::LineString<C>>,
+    geo_types::Polygon<C::T>: for<'a> From<&'a geo_types_n::Polygon<C>>,
 {
     fn from(val: Polygon<C>) -> Self {
         if val.rings().len() == 1 {
@@ -68,14 +68,14 @@ where
 
 impl<C: Coord> From<geo_types_n::MultiPolygon<C>> for Polygon<C>
 where
-    geo_types::LineString<f64>: for<'a> From<&'a geo_types_n::LineString<C>>,
+    geo_types::LineString<C::T>: for<'a> From<&'a geo_types_n::LineString<C>>,
 {
     fn from(value: geo_types_n::MultiPolygon<C>) -> Self {
         let a = value
             .0
             .into_iter()
             .flat_map(|poly| {
-                once(clone_to_winding_order(
+                once(clone_to_winding_order::<C>(
                     poly.exterior(),
                     WindingOrder::Clockwise,
                 ))
@@ -92,7 +92,7 @@ where
 
 impl<C: Coord> From<geo_types_n::Polygon<C>> for Polygon<C>
 where
-    geo_types::LineString<f64>: for<'a> From<&'a geo_types_n::LineString<C>>,
+    geo_types::LineString<C::T>: for<'a> From<&'a geo_types_n::LineString<C>>,
 {
     fn from(value: geo_types_n::Polygon<C>) -> Self {
         let a = once(clone_to_winding_order(
@@ -111,7 +111,7 @@ where
 
 impl<C: Coord> From<geo_types_n::Rect<C>> for Polygon<C>
 where
-    geo_types::LineString<f64>: for<'a> From<&'a geo_types_n::LineString<C>>,
+    geo_types::LineString<C::T>: for<'a> From<&'a geo_types_n::LineString<C>>,
 {
     fn from(value: geo_types_n::Rect<C>) -> Self {
         value.to_polygon().into()
@@ -120,7 +120,7 @@ where
 
 impl<C: Coord> From<geo_types_n::Triangle<C>> for Polygon<C>
 where
-    geo_types::LineString<f64>: for<'a> From<&'a geo_types_n::LineString<C>>,
+    geo_types::LineString<C::T>: for<'a> From<&'a geo_types_n::LineString<C>>,
 {
     fn from(value: geo_types_n::Triangle<C>) -> Self {
         // polygon's into handles ring winding for us
@@ -139,8 +139,8 @@ fn make_polygon<C: Coord>(
     holes: &[geo_types_n::LineString<C>],
 ) -> geo_types_n::Polygon<C>
 where
-    geo_types::LineString<f64>: for<'a> From<&'a geo_types_n::LineString<C>>,
-    geo_types::Polygon<f64>: for<'a> From<&'a geo_types_n::Polygon<C>>,
+    geo_types::LineString<C::T>: for<'a> From<&'a geo_types_n::LineString<C>>,
+    geo_types::Polygon<C::T>: for<'a> From<&'a geo_types_n::Polygon<C>>,
 {
     let ext = geo_types_n::Polygon::<C>::new(exterior.clone(), vec![]);
 
@@ -170,9 +170,9 @@ where
 
 fn is_ccw<C: Coord>(ring: &geo_types_n::LineString<C>) -> bool
 where
-    geo_types::LineString<f64>: for<'a> From<&'a geo_types_n::LineString<C>>,
+    geo_types::LineString<C::T>: for<'a> From<&'a geo_types_n::LineString<C>>,
 {
-    let r: geo_types::LineString<f64> = ring.into();
+    let r: geo_types::LineString<C::T> = ring.into();
     Winding::is_ccw(&r)
 }
 
@@ -181,21 +181,21 @@ fn intersects<C: Coord>(
     hole: &geo_types_n::LineString<C>,
 ) -> bool
 where
-    geo_types::Polygon<f64>: for<'a> From<&'a geo_types_n::Polygon<C>>,
-    geo_types::LineString<f64>: for<'a> From<&'a geo_types_n::LineString<C>>,
+    geo_types::Polygon<C::T>: for<'a> From<&'a geo_types_n::Polygon<C>>,
+    geo_types::LineString<C::T>: for<'a> From<&'a geo_types_n::LineString<C>>,
 {
-    let p: geo_types::Polygon<f64> = exterior.into();
-    let h: geo_types::LineString<f64> = hole.into();
+    let p: geo_types::Polygon<C::T> = exterior.into();
+    let h: geo_types::LineString<C::T> = hole.into();
     p.intersects(&h)
 }
 
 fn covers<C: Coord>(exterior: &geo_types_n::Polygon<C>, hole: &geo_types_n::LineString<C>) -> bool
 where
-    geo_types::Polygon<f64>: for<'a> From<&'a geo_types_n::Polygon<C>>,
-    geo_types::LineString<f64>: for<'a> From<&'a geo_types_n::LineString<C>>,
+    geo_types::Polygon<C::T>: for<'a> From<&'a geo_types_n::Polygon<C>>,
+    geo_types::LineString<C::T>: for<'a> From<&'a geo_types_n::LineString<C>>,
 {
-    let p: geo_types::Polygon<f64> = exterior.into();
-    let h: geo_types::LineString<f64> = hole.into();
+    let p: geo_types::Polygon<C::T> = exterior.into();
+    let h: geo_types::LineString<C::T> = hole.into();
     p.covers(&h)
 }
 
@@ -204,14 +204,14 @@ fn clone_to_winding_order<C: Coord>(
     winding_order: WindingOrder,
 ) -> geo_types_n::LineString<C>
 where
-    geo_types::LineString<f64>: for<'a> From<&'a geo_types_n::LineString<C>>,
+    geo_types::LineString<C::T>: for<'a> From<&'a geo_types_n::LineString<C>>,
 {
-    let r: geo_types::LineString<f64> = ring.into();
+    let r: geo_types::LineString<C::T> = ring.into();
     if r.winding_order() == Some(winding_order) {
         ring.clone()
     } else {
         let mut coords = ring.0.clone();
         coords.reverse();
-        geo_types_n::LineString(coords)
+        geo_types_n::LineString::<C>(coords)
     }
 }

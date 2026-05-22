@@ -1,7 +1,6 @@
 use super::Coord;
 use geo_traits::CoordTrait;
 use geo_traits::LineTrait;
-
 #[derive(Eq, PartialEq, Clone, Copy, Hash)]
 pub struct Line<C: Coord> {
     pub start: C,
@@ -22,10 +21,12 @@ where
 }
 
 impl<C: Coord> LineTrait for Line<C> {
+    // type CoordType<'a>: 'a + CoordTrait<T = Self::T>
+
     type CoordType<'a>
         = C
     where
-        C: 'a + CoordTrait<T = f64>;
+        C: 'a;
 
     fn start(&self) -> Self::CoordType<'_> {
         self.start
@@ -35,9 +36,9 @@ impl<C: Coord> LineTrait for Line<C> {
     }
 }
 
-impl<C: Coord> From<&Line<C>> for geo_types::Line<f64>
+impl<C: Coord> From<&Line<C>> for geo_types::Line<<C as CoordTrait>::T>
 where
-    geo_types::Coord<f64>: From<C>,
+    geo_types::Coord<<C as CoordTrait>::T>: From<C>,
 {
     fn from(val: &Line<C>) -> Self {
         Self {
@@ -46,16 +47,18 @@ where
         }
     }
 }
-impl<C: Coord> From<&geo_types::Line<f64>> for Line<C>
+
+impl<C: Coord> From<&geo_types::Line<<C as CoordTrait>::T>> for Line<C>
 where
-    C: From<geo_types::Coord<f64>>,
+    C: From<geo_types::Coord<<C as CoordTrait>::T>>,
 {
-    fn from(value: &geo_types::Line<f64>) -> Self {
+    fn from(value: &geo_types::Line<<C as CoordTrait>::T>) -> Self {
         Self {
             start: value.start.into(),
             end: value.end.into(),
         }
     }
 }
-impl_from!(geo_types::Line<f64>, Line<C>);
-impl_from!(Line<C>, geo_types::Line<f64>);
+
+impl_from!(geo_types::Line<C::T>, Line<C>);
+impl_from!(Line<C>, geo_types::Line<C::T>);

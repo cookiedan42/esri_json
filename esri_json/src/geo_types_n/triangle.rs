@@ -24,21 +24,21 @@ where
     }
 }
 
-impl<C: Coord> From<&Triangle<C>> for geo_types::Triangle<f64>
+impl<C: Coord> From<&Triangle<C>> for geo_types::Triangle<C::T>
 where
-    geo_types::Coord<f64>: From<C>,
+    geo_types::Coord<C::T>: From<C>,
 {
     fn from(val: &Triangle<C>) -> Self {
         Self(val.0.into(), val.1.into(), val.2.into())
     }
 }
-impl<C: Coord> From<&geo_types::Triangle<f64>> for Triangle<C>
+impl<C: Coord> From<&geo_types::Triangle<C::T>> for Triangle<C>
 where
-    C: From<geo_types::Coord<f64>>,
+    C: From<geo_types::Coord<C::T>>,
 {
-    fn from(val: &geo_types::Triangle<f64>) -> Self {
+    fn from(val: &geo_types::Triangle<C::T>) -> Self {
         Self(val.0.into(), val.1.into(), val.2.into())
     }
 }
-impl_from!(geo_types::Triangle<f64>, Triangle<C>);
-impl_from!(Triangle<C>, geo_types::Triangle<f64>);
+impl_from!(geo_types::Triangle<C::T>, Triangle<C>);
+impl_from!(Triangle<C>, geo_types::Triangle<C::T>);

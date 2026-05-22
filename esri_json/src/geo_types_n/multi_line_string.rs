@@ -29,21 +29,26 @@ impl<C: Coord> MultiLineStringTrait for MultiLineString<C> {
     }
 }
 
-impl<C: Coord> From<&MultiLineString<C>> for geo_types::MultiLineString<f64>
+impl<C: Coord> From<&MultiLineString<C>> for geo_types::MultiLineString<C::T>
 where
-    geo_types::LineString<f64>: for<'a> From<&'a LineString<C>>,
+    geo_types::LineString<C::T>: for<'a> From<&'a LineString<C>>,
 {
     fn from(value: &MultiLineString<C>) -> Self {
-        Self::from_iter(value.0.iter().map(Into::<geo_types::LineString<f64>>::into))
+        Self::from_iter(
+            value
+                .0
+                .iter()
+                .map(Into::<geo_types::LineString<C::T>>::into),
+        )
     }
 }
-impl<C: Coord> From<&geo_types::MultiLineString<f64>> for MultiLineString<C>
+impl<C: Coord> From<&geo_types::MultiLineString<C::T>> for MultiLineString<C>
 where
-    LineString<C>: for<'a> From<&'a geo_types::LineString<f64>>,
+    LineString<C>: for<'a> From<&'a geo_types::LineString<C::T>>,
 {
-    fn from(value: &geo_types::MultiLineString<f64>) -> Self {
+    fn from(value: &geo_types::MultiLineString<C::T>) -> Self {
         Self(value.0.iter().map(Into::into).collect())
     }
 }
-impl_from!(geo_types::MultiLineString<f64>, MultiLineString<C>);
-impl_from!(MultiLineString<C>, geo_types::MultiLineString<f64>);
+impl_from!(geo_types::MultiLineString<C::T>, MultiLineString<C>);
+impl_from!(MultiLineString<C>, geo_types::MultiLineString<C::T>);

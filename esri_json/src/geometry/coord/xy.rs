@@ -1,33 +1,52 @@
+use crate::geo_types_n::CoordNumber;
 use crate::geometry::Coord;
 use geo_traits::CoordTrait;
 use serde::{Deserialize, Serialize};
 
 /// Base Coordinate type with X and Y coordinates
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Copy)]
-#[serde(into = "Vec<f64>", from = "Vec<f64>")]
-pub struct CoordXy {
-    x: f64,
-    y: f64,
+#[serde(into = "Vec<T>", from = "Vec<T>")]
+pub struct CoordXy<T>
+where
+    T: CoordNumber,
+{
+    x: T,
+    y: T,
 }
 
-impl CoordXy {
-    pub fn new(x: f64, y: f64) -> Self {
-        Self { x, y }
+impl<T> CoordXy<T>
+where
+    T: CoordNumber,
+{
+    pub fn new(x: T, y: T) -> Self {
+        Self {
+            x: x.into(),
+            y: y.into(),
+        }
     }
 }
 
-impl From<&CoordXy> for Vec<f64> {
-    fn from(val: &CoordXy) -> Self {
+impl<T> From<&CoordXy<T>> for Vec<T>
+where
+    T: CoordNumber,
+{
+    fn from(val: &CoordXy<T>) -> Self {
         vec![val.x, val.y]
     }
 }
-impl From<CoordXy> for Vec<f64> {
-    fn from(val: CoordXy) -> Self {
+impl<T> From<CoordXy<T>> for Vec<T>
+where
+    T: CoordNumber,
+{
+    fn from(val: CoordXy<T>) -> Self {
         (&val).into()
     }
 }
-impl From<Vec<f64>> for CoordXy {
-    fn from(array: Vec<f64>) -> Self {
+impl<T> From<Vec<T>> for CoordXy<T>
+where
+    T: CoordNumber,
+{
+    fn from(array: Vec<T>) -> Self {
         match array.len() {
             2 => Self {
                 x: array[0],
@@ -38,7 +57,10 @@ impl From<Vec<f64>> for CoordXy {
     }
 }
 
-impl Coord for CoordXy {
+impl<T> Coord for CoordXy<T>
+where
+    T: CoordNumber,
+{
     fn dim() -> geo_traits::Dimensions {
         geo_traits::Dimensions::Xy
     }
@@ -49,13 +71,22 @@ impl Coord for CoordXy {
         false
     }
 
-    fn from_coord_fields(x: f64, y: f64, _z: Option<f64>, _m: Option<f64>) -> Self {
-        Self { x, y }
+    fn from_coord_fields<C>(x: C, y: C, _z: Option<C>, _m: Option<C>) -> Self
+    where
+        C: Into<Self::T>,
+    {
+        Self {
+            x: x.into(),
+            y: y.into(),
+        }
     }
 }
 
-impl CoordTrait for CoordXy {
-    type T = f64;
+impl<T> CoordTrait for CoordXy<T>
+where
+    T: CoordNumber,
+{
+    type T = T;
     fn x(&self) -> Self::T {
         self.x
     }

@@ -28,21 +28,21 @@ impl<C: Coord> LineStringTrait for LineString<C> {
     }
 }
 
-impl<C: Coord> From<&LineString<C>> for geo_types::LineString<f64>
+impl<C: Coord> From<&LineString<C>> for geo_types::LineString<C::T>
 where
-    geo_types::Coord<f64>: for<'a> From<&'a C>,
+    geo_types::Coord<C::T>: for<'a> From<&'a C>,
 {
     fn from(value: &LineString<C>) -> Self {
-        Self::from_iter(value.0.iter().map(Into::<geo_types::Coord<f64>>::into))
+        Self::from_iter(value.0.iter().map(Into::<geo_types::Coord<C::T>>::into))
     }
 }
-impl<C: Coord> From<&geo_types::LineString<f64>> for LineString<C>
+impl<C: Coord> From<&geo_types::LineString<C::T>> for LineString<C>
 where
-    C: for<'a> From<&'a geo_types::Coord<f64>>,
+    C: for<'a> From<&'a geo_types::Coord<C::T>>,
 {
-    fn from(value: &geo_types::LineString<f64>) -> Self {
+    fn from(value: &geo_types::LineString<C::T>) -> Self {
         Self(value.0.iter().map(Into::into).collect())
     }
 }
-impl_from!(geo_types::LineString<f64>, LineString<C>);
-impl_from!(LineString<C>, geo_types::LineString<f64>);
+impl_from!(geo_types::LineString<C::T>, LineString<C>);
+impl_from!(LineString<C>, geo_types::LineString<C::T>);

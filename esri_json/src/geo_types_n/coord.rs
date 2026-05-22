@@ -1,10 +1,12 @@
-pub use crate::geometry::Coord;
-pub use crate::geometry::{CoordXy, CoordXym, CoordXyz, CoordXyzm};
+use crate::geo_types_n::CoordNumber;
+pub use crate::geometry::{Coord, CoordXy, CoordXym, CoordXyz, CoordXyzm};
 use geo_traits::CoordTrait;
-
 macro_rules! FromIntoGeoCoord {
     ($coordtype:ty) => {
-        impl From<$coordtype> for geo_types::Coord<f64> {
+        impl<T> From<$coordtype> for geo_types::Coord<T>
+        where
+            T: CoordNumber,
+        {
             fn from(value: $coordtype) -> Self {
                 Self {
                     x: value.x(),
@@ -13,7 +15,10 @@ macro_rules! FromIntoGeoCoord {
             }
         }
 
-        impl From<&$coordtype> for geo_types::Coord<f64> {
+        impl<T> From<&$coordtype> for geo_types::Coord<T>
+        where
+            T: CoordNumber,
+        {
             fn from(value: &$coordtype) -> Self {
                 Self {
                     x: value.x(),
@@ -22,20 +27,26 @@ macro_rules! FromIntoGeoCoord {
             }
         }
 
-        impl From<geo_types::Coord<f64>> for $coordtype {
-            fn from(value: geo_types::Coord<f64>) -> Self {
+        impl<T> From<geo_types::Coord<T>> for $coordtype
+        where
+            T: CoordNumber,
+        {
+            fn from(value: geo_types::Coord<T>) -> Self {
                 <$coordtype>::from_coord_fields(value.x, value.y, None, None)
             }
         }
-        impl From<&geo_types::Coord<f64>> for $coordtype {
-            fn from(value: &geo_types::Coord<f64>) -> Self {
+        impl<T> From<&geo_types::Coord<T>> for $coordtype
+        where
+            T: CoordNumber,
+        {
+            fn from(value: &geo_types::Coord<T>) -> Self {
                 <$coordtype>::from_coord_fields(value.x, value.y, None, None)
             }
         }
     };
 }
 
-FromIntoGeoCoord!(CoordXy);
-FromIntoGeoCoord!(CoordXyz);
-FromIntoGeoCoord!(CoordXym);
-FromIntoGeoCoord!(CoordXyzm);
+FromIntoGeoCoord!(CoordXy<T>);
+FromIntoGeoCoord!(CoordXyz<T>);
+FromIntoGeoCoord!(CoordXym<T>);
+FromIntoGeoCoord!(CoordXyzm<T>);

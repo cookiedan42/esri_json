@@ -29,39 +29,47 @@ impl<C: Coord> PointTrait for Point<C> {
     }
 }
 
-impl<C: Coord> From<&Point<C>> for geo_types::Point<f64>
+impl<C: Coord> From<&Point<C>> for geo_types::Point<C::T>
 where
-    geo_types::Coord<f64>: From<C>,
+    geo_types::Coord<C::T>: From<C>,
 {
     fn from(val: &Point<C>) -> Self {
         Self(val.0.into())
     }
 }
-impl<C: Coord> From<&geo_types::Point<f64>> for Point<C>
+impl<C: Coord> From<&geo_types::Point<C::T>> for Point<C>
 where
-    C: From<geo_types::Coord<f64>>,
+    C: From<geo_types::Coord<C::T>>,
 {
-    fn from(val: &geo_types::Point<f64>) -> Self {
+    fn from(val: &geo_types::Point<C::T>) -> Self {
         Self(val.0.into())
     }
 }
-impl_from!(geo_types::Point<f64>, Point<C>);
-impl_from!(Point<C>, geo_types::Point<f64>);
+impl_from!(geo_types::Point<C::T>, Point<C>);
+impl_from!(Point<C>, geo_types::Point<C::T>);
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::geo_types_n::CoordNumber;
     use crate::geometry::*;
+    use rstest::rstest;
 
-    #[test]
-    fn points() {
-        let _p: geo_types::Point<f64> =
-            Point::<CoordXy>(CoordXy::from_coord_fields(0.0, 0.0, None, None)).into();
-        let _p: geo_types::Point<f64> =
-            Point::<CoordXyz>(CoordXyz::from_coord_fields(0.0, 0.0, Some(0.0), None)).into();
-        let _p: geo_types::Point<f64> =
-            Point::<CoordXym>(CoordXym::from_coord_fields(0.0, 0.0, None, Some(0.0))).into();
-        let _p: geo_types::Point<f64> =
-            Point::<CoordXyzm>(CoordXyzm::from_coord_fields(0.0, 0.0, Some(0.0), Some(0.0))).into();
+    #[rstest]
+    #[case::f32(std::marker::PhantomData::<f32>)]
+    #[case::f64(std::marker::PhantomData::<f64>)]
+    fn points<T>(#[case] _phantom: std::marker::PhantomData<T>)
+    where
+        T: CoordNumber + From<f32>,
+    {
+        let _p: geo_types::Point<T> =
+            Point::<CoordXy<T>>(CoordXy::from_coord_fields(0.0, 0.0, None, None)).into();
+        let _p: geo_types::Point<T> =
+            Point::<CoordXyz<T>>(CoordXyz::from_coord_fields(0.0, 0.0, Some(0.0), None)).into();
+        let _p: geo_types::Point<T> =
+            Point::<CoordXym<T>>(CoordXym::from_coord_fields(0.0, 0.0, None, Some(0.0))).into();
+        let _p: geo_types::Point<T> =
+            Point::<CoordXyzm<T>>(CoordXyzm::from_coord_fields(0.0, 0.0, Some(0.0), Some(0.0)))
+                .into();
     }
 }

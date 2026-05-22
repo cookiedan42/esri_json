@@ -1,18 +1,25 @@
+use crate::geo_types_n::CoordNumber;
 use crate::geometry::Coord;
 use geo_traits::CoordTrait;
 use serde::{Deserialize, Serialize};
 
 /// Base Coordinate type with X, Y and Z coordinates and an optional Measure value
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Copy)]
-#[serde(into = "Vec<f64>", from = "Vec<f64>")]
-pub struct CoordXyzm {
-    x: f64,
-    y: f64,
-    z: f64,
-    m: Option<f64>,
+#[serde(into = "Vec<T>", from = "Vec<T>")]
+pub struct CoordXyzm<T>
+where
+    T: CoordNumber,
+{
+    x: T,
+    y: T,
+    z: T,
+    m: Option<T>,
 }
-impl From<&CoordXyzm> for Vec<f64> {
-    fn from(val: &CoordXyzm) -> Self {
+impl<T> From<&CoordXyzm<T>> for Vec<T>
+where
+    T: CoordNumber,
+{
+    fn from(val: &CoordXyzm<T>) -> Self {
         if let Some(m) = val.m {
             vec![val.x, val.y, val.z, m]
         } else {
@@ -20,14 +27,20 @@ impl From<&CoordXyzm> for Vec<f64> {
         }
     }
 }
-impl From<CoordXyzm> for Vec<f64> {
-    fn from(val: CoordXyzm) -> Self {
+impl<T> From<CoordXyzm<T>> for Vec<T>
+where
+    T: CoordNumber,
+{
+    fn from(val: CoordXyzm<T>) -> Self {
         (&val).into()
     }
 }
 
-impl From<Vec<f64>> for CoordXyzm {
-    fn from(array: Vec<f64>) -> Self {
+impl<T> From<Vec<T>> for CoordXyzm<T>
+where
+    T: CoordNumber,
+{
+    fn from(array: Vec<T>) -> Self {
         match array.len() {
             4 => Self {
                 x: array[0],
@@ -46,7 +59,10 @@ impl From<Vec<f64>> for CoordXyzm {
     }
 }
 
-impl Coord for CoordXyzm {
+impl<T> Coord for CoordXyzm<T>
+where
+    T: CoordNumber,
+{
     fn dim() -> geo_traits::Dimensions {
         geo_traits::Dimensions::Xyzm
     }
@@ -56,24 +72,30 @@ impl Coord for CoordXyzm {
     fn has_m() -> bool {
         true
     }
-    fn z(&self) -> Option<f64> {
+    fn z(&self) -> Option<T> {
         Some(self.z)
     }
-    fn m(&self) -> Option<f64> {
+    fn m(&self) -> Option<T> {
         self.m
     }
-    fn from_coord_fields(x: f64, y: f64, z: Option<f64>, m: Option<f64>) -> Self {
+    fn from_coord_fields<C>(x: C, y: C, z: Option<C>, m: Option<C>) -> Self
+    where
+        C: Into<Self::T>,
+    {
         Self {
-            x,
-            y,
-            z: z.unwrap_or(0.0),
-            m,
+            x: x.into(),
+            y: y.into(),
+            z: z.map_or_else(Self::T::zero, Into::into),
+            m: m.map(Into::into),
         }
     }
 }
 
-impl CoordTrait for CoordXyzm {
-    type T = f64;
+impl<T> CoordTrait for CoordXyzm<T>
+where
+    T: CoordNumber,
+{
+    type T = T;
     fn x(&self) -> Self::T {
         self.x
     }
@@ -88,7 +110,7 @@ impl CoordTrait for CoordXyzm {
             0 => self.x,
             1 => self.y,
             2 => self.z,
-            3 => self.m.unwrap_or(0.0),
+            3 => self.m.unwrap_or_else(T::zero),
             _ => panic!("Expected 4 values, got {}", n),
         }
     }

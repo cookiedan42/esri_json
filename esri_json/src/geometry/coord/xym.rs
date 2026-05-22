@@ -1,17 +1,25 @@
+use crate::geo_types_n::CoordNumber;
 use crate::geometry::Coord;
 use geo_traits::CoordTrait;
 use serde::{Deserialize, Serialize};
+
 /// Base Coordinate type with X and Y coordinates and an optional Measure value
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Copy)]
-#[serde(into = "Vec<f64>", from = "Vec<f64>")]
-pub struct CoordXym {
-    x: f64,
-    y: f64,
-    m: Option<f64>,
+#[serde(into = "Vec<T>", from = "Vec<T>")]
+pub struct CoordXym<T>
+where
+    T: CoordNumber,
+{
+    x: T,
+    y: T,
+    m: Option<T>,
 }
 
-impl From<&CoordXym> for Vec<f64> {
-    fn from(val: &CoordXym) -> Self {
+impl<T> From<&CoordXym<T>> for Vec<T>
+where
+    T: CoordNumber,
+{
+    fn from(val: &CoordXym<T>) -> Self {
         if let Some(m) = val.m {
             vec![val.x, val.y, m]
         } else {
@@ -19,13 +27,19 @@ impl From<&CoordXym> for Vec<f64> {
         }
     }
 }
-impl From<CoordXym> for Vec<f64> {
-    fn from(val: CoordXym) -> Self {
+impl<T> From<CoordXym<T>> for Vec<T>
+where
+    T: CoordNumber,
+{
+    fn from(val: CoordXym<T>) -> Self {
         (&val).into()
     }
 }
-impl From<Vec<f64>> for CoordXym {
-    fn from(array: Vec<f64>) -> Self {
+impl<T> From<Vec<T>> for CoordXym<T>
+where
+    T: CoordNumber,
+{
+    fn from(array: Vec<T>) -> Self {
         match array.len() {
             3 => Self {
                 x: array[0],
@@ -42,7 +56,10 @@ impl From<Vec<f64>> for CoordXym {
     }
 }
 
-impl Coord for CoordXym {
+impl<T> Coord for CoordXym<T>
+where
+    T: CoordNumber,
+{
     fn dim() -> geo_traits::Dimensions {
         geo_traits::Dimensions::Xym
     }
@@ -52,30 +69,40 @@ impl Coord for CoordXym {
     fn has_m() -> bool {
         true
     }
-    fn m(&self) -> Option<f64> {
+    fn m(&self) -> Option<T> {
         self.m
     }
-    fn from_coord_fields(x: f64, y: f64, _z: Option<f64>, m: Option<f64>) -> Self {
-        Self { x, y, m }
+    fn from_coord_fields<C>(x: C, y: C, _z: Option<C>, m: Option<C>) -> Self
+    where
+        C: Into<T>,
+    {
+        Self {
+            x: x.into(),
+            y: y.into(),
+            m: m.map(Into::into),
+        }
     }
 }
 
-impl CoordTrait for CoordXym {
-    type T = f64;
-    fn x(&self) -> Self::T {
+impl<T> CoordTrait for CoordXym<T>
+where
+    T: CoordNumber,
+{
+    type T = T;
+    fn x(&self) -> T {
         self.x
     }
-    fn y(&self) -> Self::T {
+    fn y(&self) -> T {
         self.y
     }
     fn dim(&self) -> geo_traits::Dimensions {
         geo_traits::Dimensions::Xym
     }
-    fn nth_or_panic(&self, n: usize) -> Self::T {
+    fn nth_or_panic(&self, n: usize) -> T {
         match n {
             0 => self.x,
             1 => self.y,
-            2 => self.m.unwrap_or(0.0),
+            2 => self.m.unwrap_or_else(T::zero),
             _ => panic!("Expected 3 values, got {}", n),
         }
     }

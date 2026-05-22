@@ -1,7 +1,7 @@
 use crate::geometry::Coord;
 use crate::geometry::Geometry;
 
-impl<C> TryInto<Geometry<C>> for geo_types::Geometry<f64>
+impl<C> TryInto<Geometry<C>> for geo_types::Geometry<C::T>
 where
     C: Coord + From<geo::Coord>,
 {

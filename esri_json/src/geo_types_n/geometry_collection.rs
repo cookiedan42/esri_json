@@ -20,20 +20,20 @@ impl<C: Coord> GeometryCollectionTrait for GeometryCollection<C> {
     }
 }
 
-impl<C: Coord> From<&geo_types::GeometryCollection<f64>> for GeometryCollection<C>
+impl<C: Coord> From<&geo_types::GeometryCollection<C::T>> for GeometryCollection<C>
 where
-    Geometry<C>: for<'a> From<&'a geo_types::Geometry<f64>>,
+    Geometry<C>: for<'a> From<&'a geo_types::Geometry<C::T>>,
 {
-    fn from(value: &geo_types::GeometryCollection<f64>) -> Self {
+    fn from(value: &geo_types::GeometryCollection<C::T>) -> Self {
         let a = value.iter().map(Into::into).collect::<Vec<_>>();
         Self(a)
     }
 }
-impl<C: Coord> From<&GeometryCollection<C>> for geo_types::GeometryCollection<f64>
+impl<C: Coord> From<&GeometryCollection<C>> for geo_types::GeometryCollection<C::T>
 where
-    geo_types::Geometry<f64>: for<'a> From<&'a Geometry<C>>,
+    geo_types::Geometry<C::T>: for<'a> From<&'a Geometry<C>>,
 {
     fn from(value: &GeometryCollection<C>) -> Self {
-        Self::from_iter(value.0.iter().map(Into::<geo_types::Geometry<f64>>::into))
+        Self::from_iter(value.0.iter().map(Into::<geo_types::Geometry<C::T>>::into))
     }
 }

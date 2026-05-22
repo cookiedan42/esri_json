@@ -39,21 +39,21 @@ impl<C: Coord> RectTrait for Rect<C> {
         self.max
     }
 }
-impl<C: Coord> From<&Rect<C>> for geo_types::Rect<f64>
+impl<C: Coord> From<&Rect<C>> for geo_types::Rect<C::T>
 where
-    geo_types::Coord<f64>: From<C>,
+    geo_types::Coord<C::T>: From<C>,
 {
     fn from(val: &Rect<C>) -> Self {
         Self::new(val.min, val.max)
     }
 }
-impl<C: Coord> From<&geo_types::Rect<f64>> for Rect<C>
+impl<C: Coord> From<&geo_types::Rect<C::T>> for Rect<C>
 where
-    C: From<geo_types::Coord<f64>>,
+    C: From<geo_types::Coord<C::T>>,
 {
-    fn from(val: &geo_types::Rect<f64>) -> Self {
+    fn from(val: &geo_types::Rect<C::T>) -> Self {
         Self::new(val.min().into(), val.max().into())
     }
 }
-impl_from!(geo_types::Rect<f64>, Rect<C>);
-impl_from!(Rect<C>, geo_types::Rect<f64>);
+impl_from!(geo_types::Rect<C::T>, Rect<C>);
+impl_from!(Rect<C>, geo_types::Rect<C::T>);

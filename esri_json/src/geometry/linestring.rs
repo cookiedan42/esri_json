@@ -1,11 +1,12 @@
 //! Primitive type for a Polyline
 
 use super::Coord;
-
+use geo_traits::CoordTrait;
 use serde::{Deserialize, Serialize};
 
 /// An ordered Collection of [`Coord`], used as part of [`Polyline`](crate::geometry::Polyline) and [`Polygon`](crate::geometry::Polygon)
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[serde(bound(serialize = "C: Serialize", deserialize = "C: Deserialize<'de>"))]
 pub struct LineString<C: Coord>(pub(crate) Vec<C>);
 
 impl<C: Coord> LineString<C> {
@@ -15,7 +16,7 @@ impl<C: Coord> LineString<C> {
     pub fn points(&self) -> &Vec<C> {
         &self.0
     }
-    pub fn set_z(self, z: f64) -> Self {
+    pub fn set_z(self, z: <C as CoordTrait>::T) -> Self {
         Self(self.0.iter().map(|c| c.set_z(z)).collect())
     }
 }

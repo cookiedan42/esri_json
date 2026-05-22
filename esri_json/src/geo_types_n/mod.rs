@@ -1,4 +1,6 @@
 //! Intermediate representation of geo_types but which allow for up to xyzm
+
+/// create From owned using the From borrowed impl
 macro_rules! impl_from {
     ($Source:ty, $Target:ty) => {
         impl<C: Coord> From<$Source> for $Target
@@ -11,6 +13,8 @@ macro_rules! impl_from {
         }
     };
 }
+mod number;
+pub use number::CoordNumber;
 
 pub(crate) mod coord;
 pub(crate) mod geometry;

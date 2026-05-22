@@ -3,6 +3,8 @@ use super::{
     GeometryCollection, Line, LineString, MultiLineString, MultiPoint, MultiPolygon, Point,
     Polygon, Rect, Triangle,
 };
+use crate::geo_types_n::CoordNumber;
+use geo_traits::CoordTrait;
 use geo_traits::GeometryTrait;
 
 #[derive(Eq, PartialEq, Clone, Hash)]
@@ -19,8 +21,11 @@ pub enum Geometry<C: Coord> {
     Triangle(Triangle<C>),
 }
 
-impl<C: Coord> GeometryTrait for Geometry<C> {
-    type T = f64;
+impl<C: Coord> GeometryTrait for Geometry<C>
+where
+    <C as CoordTrait>::T: CoordNumber,
+{
+    type T = <C as CoordTrait>::T;
     type PointType<'a>
         = Point<C>
     where
@@ -98,8 +103,11 @@ impl<C: Coord> GeometryTrait for Geometry<C> {
 
 macro_rules! impl_geometrytrait_specialization {
     ($geometry_type:ident, $variant:expr) => {
-        impl<C: Coord> GeometryTrait for $geometry_type<C> {
-            type T = f64;
+        impl<C: Coord> GeometryTrait for $geometry_type<C>
+        where
+            <C as CoordTrait>::T: CoordNumber,
+        {
+            type T = <C as CoordTrait>::T;
             type PointType<'a>
                 = Point<C>
             where
@@ -184,19 +192,19 @@ impl_geometrytrait_specialization!(
     geo_traits::GeometryType::GeometryCollection
 );
 
-impl<C: Coord> From<&Geometry<C>> for geo_types::Geometry<f64>
+impl<C: Coord> From<&Geometry<C>> for geo_types::Geometry<C::T>
 where
-    geo_types::Coord<f64>: for<'a> From<&'a C>,
-    geo_types::Point<f64>: for<'a> From<&'a Point<C>>,
-    geo_types::Line<f64>: for<'a> From<&'a Line<C>>,
-    geo_types::LineString<f64>: for<'a> From<&'a LineString<C>>,
-    geo_types::Polygon<f64>: for<'a> From<&'a Polygon<C>>,
-    geo_types::MultiPoint<f64>: for<'a> From<&'a MultiPoint<C>>,
-    geo_types::MultiLineString<f64>: for<'a> From<&'a MultiLineString<C>>,
-    geo_types::MultiPolygon<f64>: for<'a> From<&'a MultiPolygon<C>>,
-    geo_types::GeometryCollection<f64>: for<'a> From<&'a GeometryCollection<C>>,
-    geo_types::Rect<f64>: for<'a> From<&'a Rect<C>>,
-    geo_types::Triangle<f64>: for<'a> From<&'a Triangle<C>>,
+    geo_types::Coord<C::T>: for<'a> From<&'a C>,
+    geo_types::Point<C::T>: for<'a> From<&'a Point<C>>,
+    geo_types::Line<C::T>: for<'a> From<&'a Line<C>>,
+    geo_types::LineString<C::T>: for<'a> From<&'a LineString<C>>,
+    geo_types::Polygon<C::T>: for<'a> From<&'a Polygon<C>>,
+    geo_types::MultiPoint<C::T>: for<'a> From<&'a MultiPoint<C>>,
+    geo_types::MultiLineString<C::T>: for<'a> From<&'a MultiLineString<C>>,
+    geo_types::MultiPolygon<C::T>: for<'a> From<&'a MultiPolygon<C>>,
+    geo_types::GeometryCollection<C::T>: for<'a> From<&'a GeometryCollection<C>>,
+    geo_types::Rect<C::T>: for<'a> From<&'a Rect<C>>,
+    geo_types::Triangle<C::T>: for<'a> From<&'a Triangle<C>>,
 {
     fn from(value: &Geometry<C>) -> Self {
         match value {
@@ -213,21 +221,21 @@ where
         }
     }
 }
-impl<C: Coord> From<&geo_types::Geometry<f64>> for Geometry<C>
+impl<C: Coord> From<&geo_types::Geometry<C::T>> for Geometry<C>
 where
-    C: From<geo_types::Coord<f64>>,
-    Point<C>: for<'a> From<&'a geo_types::Point<f64>>,
-    Line<C>: for<'a> From<&'a geo_types::Line<f64>>,
-    LineString<C>: for<'a> From<&'a geo_types::LineString<f64>>,
-    Polygon<C>: for<'a> From<&'a geo_types::Polygon<f64>>,
-    MultiPoint<C>: for<'a> From<&'a geo_types::MultiPoint<f64>>,
-    MultiLineString<C>: for<'a> From<&'a geo_types::MultiLineString<f64>>,
-    MultiPolygon<C>: for<'a> From<&'a geo_types::MultiPolygon<f64>>,
-    GeometryCollection<C>: for<'a> From<&'a geo_types::GeometryCollection<f64>>,
-    Rect<C>: for<'a> From<&'a geo_types::Rect<f64>>,
-    Triangle<C>: for<'a> From<&'a geo_types::Triangle<f64>>,
+    C: From<geo_types::Coord<C::T>>,
+    Point<C>: for<'a> From<&'a geo_types::Point<C::T>>,
+    Line<C>: for<'a> From<&'a geo_types::Line<C::T>>,
+    LineString<C>: for<'a> From<&'a geo_types::LineString<C::T>>,
+    Polygon<C>: for<'a> From<&'a geo_types::Polygon<C::T>>,
+    MultiPoint<C>: for<'a> From<&'a geo_types::MultiPoint<C::T>>,
+    MultiLineString<C>: for<'a> From<&'a geo_types::MultiLineString<C::T>>,
+    MultiPolygon<C>: for<'a> From<&'a geo_types::MultiPolygon<C::T>>,
+    GeometryCollection<C>: for<'a> From<&'a geo_types::GeometryCollection<C::T>>,
+    Rect<C>: for<'a> From<&'a geo_types::Rect<C::T>>,
+    Triangle<C>: for<'a> From<&'a geo_types::Triangle<C::T>>,
 {
-    fn from(value: &geo_types::Geometry<f64>) -> Self {
+    fn from(value: &geo_types::Geometry<C::T>) -> Self {
         match value {
             geo_types::Geometry::Point(p) => Geometry::Point(p.into()),
             geo_types::Geometry::Line(p) => Geometry::Line(p.into()),
@@ -242,5 +250,5 @@ where
         }
     }
 }
-impl_from!(geo_types::Geometry<f64>, Geometry<C>);
-impl_from!(Geometry<C>, geo_types::Geometry<f64>);
+impl_from!(geo_types::Geometry<C::T>, Geometry<C>);
+impl_from!(Geometry<C>, geo_types::Geometry<C::T>);

@@ -29,21 +29,21 @@ impl<C: Coord> MultiPolygonTrait for MultiPolygon<C> {
     }
 }
 
-impl<C: Coord> From<&MultiPolygon<C>> for geo_types::MultiPolygon<f64>
+impl<C: Coord> From<&MultiPolygon<C>> for geo_types::MultiPolygon<C::T>
 where
-    geo_types::Polygon<f64>: for<'a> From<&'a Polygon<C>>,
+    geo_types::Polygon<C::T>: for<'a> From<&'a Polygon<C>>,
 {
     fn from(value: &MultiPolygon<C>) -> Self {
-        Self::from_iter(value.0.iter().map(Into::<geo_types::Polygon<f64>>::into))
+        Self::from_iter(value.0.iter().map(Into::<geo_types::Polygon<C::T>>::into))
     }
 }
-impl<C: Coord> From<&geo_types::MultiPolygon<f64>> for MultiPolygon<C>
+impl<C: Coord> From<&geo_types::MultiPolygon<C::T>> for MultiPolygon<C>
 where
-    Polygon<C>: for<'a> From<&'a geo_types::Polygon<f64>>,
+    Polygon<C>: for<'a> From<&'a geo_types::Polygon<C::T>>,
 {
-    fn from(value: &geo_types::MultiPolygon<f64>) -> Self {
+    fn from(value: &geo_types::MultiPolygon<C::T>) -> Self {
         Self(value.0.iter().map(Into::into).collect())
     }
 }
-impl_from!(geo_types::MultiPolygon<f64>, MultiPolygon<C>);
-impl_from!(MultiPolygon<C>, geo_types::MultiPolygon<f64>);
+impl_from!(geo_types::MultiPolygon<C::T>, MultiPolygon<C>);
+impl_from!(MultiPolygon<C>, geo_types::MultiPolygon<C::T>);

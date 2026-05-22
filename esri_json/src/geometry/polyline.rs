@@ -1,7 +1,10 @@
 use crate::geometry::{Coord, LineString, SpatialReference};
+use geo_traits::CoordTrait;
 use serde::{Deserialize, Serialize, ser::SerializeMap};
+
 /// Representation of a [Polyline](https://developers.arcgis.com/web-scene-specification/objects/polyline_geometry/)
 #[derive(Deserialize, Debug, Clone, PartialEq)]
+#[serde(bound(serialize = "C: Serialize", deserialize = "C: Deserialize<'de>"))]
 pub struct Polyline<C: Coord> {
     #[serde(rename = "spatialReference")]
     spatial_reference: Option<SpatialReference>,
@@ -27,7 +30,7 @@ impl<C: Coord> Polyline<C> {
     pub fn set_spatial_reference(&mut self, spatial_reference: Option<SpatialReference>) {
         self.spatial_reference = spatial_reference;
     }
-    pub fn set_z(self, z: f64) -> Self {
+    pub fn set_z(self, z: <C as CoordTrait>::T) -> Self {
         Self {
             spatial_reference: self.spatial_reference,
             paths: self.paths.into_iter().map(|c| c.set_z(z)).collect(),
@@ -68,49 +71,62 @@ impl<C: Coord + Serialize> Serialize for Polyline<C> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::geo_types_n::CoordNumber;
     use crate::geometry::*;
     use esri_json_test_fixtures::polyline::*;
+    use rstest::rstest;
+    use serde::{Serialize, de::DeserializeOwned};
 
-    #[test]
-    fn empty_polyline() {
-        let de: Polyline<CoordXy> = serde_json::from_str(&empty()).unwrap();
+    #[rstest]
+    #[case::f32(std::marker::PhantomData::<f32>)]
+    #[case::f64(std::marker::PhantomData::<f64>)]
+    fn empty_polyline<T>(#[case] _phantom: std::marker::PhantomData<T>)
+    where
+        T: CoordNumber + From<f32> + Serialize + DeserializeOwned,
+    {
+        let de: Polyline<CoordXy<T>> = serde_json::from_str(&empty()).unwrap();
         let ser = serde_json::to_string(&de).unwrap();
-        let serde: Polyline<CoordXy> = serde_json::from_str(&ser).unwrap();
+        let serde: Polyline<CoordXy<T>> = serde_json::from_str(&ser).unwrap();
         assert_eq!(serde, de);
     }
 
-    #[test]
-    fn linestring() {
+    #[rstest]
+    #[case::f32(std::marker::PhantomData::<f32>)]
+    #[case::f64(std::marker::PhantomData::<f64>)]
+    fn linestring<T>(#[case] _phantom: std::marker::PhantomData<T>)
+    where
+        T: CoordNumber + From<f32> + Serialize + DeserializeOwned,
+    {
         let xy = line_xy();
         let xyz = line_xyz();
         let xym = line_xym();
         let xyzm = line_xyzm();
         let mixed = line_xym_mixed();
 
-        let de: Polyline<CoordXy> = serde_json::from_str(&xy).unwrap();
+        let de: Polyline<CoordXy<T>> = serde_json::from_str(&xy).unwrap();
         let ser = serde_json::to_string(&de).unwrap();
-        let serde: Polyline<CoordXy> = serde_json::from_str(&ser).unwrap();
+        let serde: Polyline<CoordXy<T>> = serde_json::from_str(&ser).unwrap();
         assert_eq!(serde, de);
 
-        let de: Polyline<CoordXyz> = serde_json::from_str(&xyz).unwrap();
+        let de: Polyline<CoordXyz<T>> = serde_json::from_str(&xyz).unwrap();
         let ser = serde_json::to_string(&de).unwrap();
-        let serde: Polyline<CoordXyz> = serde_json::from_str(&ser).unwrap();
+        let serde: Polyline<CoordXyz<T>> = serde_json::from_str(&ser).unwrap();
         assert_eq!(serde, de);
 
-        let de: Polyline<CoordXym> = serde_json::from_str(&xym).unwrap();
+        let de: Polyline<CoordXym<T>> = serde_json::from_str(&xym).unwrap();
         let ser = serde_json::to_string(&de).unwrap();
-        let serde: Polyline<CoordXym> = serde_json::from_str(&ser).unwrap();
+        let serde: Polyline<CoordXym<T>> = serde_json::from_str(&ser).unwrap();
         assert_eq!(serde, de);
 
-        let de: Polyline<CoordXyzm> = serde_json::from_str(&xyzm).unwrap();
+        let de: Polyline<CoordXyzm<T>> = serde_json::from_str(&xyzm).unwrap();
         let ser = serde_json::to_string(&de).unwrap();
-        let serde: Polyline<CoordXyzm> = serde_json::from_str(&ser).unwrap();
+        let serde: Polyline<CoordXyzm<T>> = serde_json::from_str(&ser).unwrap();
         assert_eq!(serde, de);
 
-        let de: Polyline<CoordXym> = serde_json::from_str(&mixed).unwrap();
+        let de: Polyline<CoordXym<T>> = serde_json::from_str(&mixed).unwrap();
         let ser = serde_json::to_string(&de).unwrap();
         println!("{}", ser);
-        let serde: Polyline<CoordXym> = serde_json::from_str(&ser).unwrap();
+        let serde: Polyline<CoordXym<T>> = serde_json::from_str(&ser).unwrap();
         assert_eq!(serde, de);
     }
 }
