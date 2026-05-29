@@ -1,4 +1,8 @@
-//! Intermediate representation of geo_types but which allow for up to xyzm
+//! Intermediate representation of geo_types which allows for different [`Coord`](crate::geometry::Coord) types
+//! [`CoordXy`](crate::geometry::CoordXy)
+//! [`CoordXyz`](crate::geometry::CoordXyzm)
+//! [`CoordXym`](crate::geometry::CoordXym)
+//! [`CoordXyzm`](crate::geometry::CoordXyzm)
 
 /// create From owned using the From borrowed impl
 macro_rules! impl_from {
@@ -13,8 +17,6 @@ macro_rules! impl_from {
         }
     };
 }
-mod number;
-pub use number::CoordNumber;
 
 pub(crate) mod coord;
 pub(crate) mod geometry;

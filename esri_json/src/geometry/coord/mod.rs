@@ -8,7 +8,7 @@ pub use xym::CoordXym;
 pub use xyz::CoordXyz;
 pub use xyzm::CoordXyzm;
 
-use crate::geo_types_n::CoordNumber;
+use crate::CoordNumber;
 use geo_traits::CoordTrait;
 
 /// Coord is the primitive type for all coordinate types

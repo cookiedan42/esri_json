@@ -2,7 +2,7 @@
 #[cfg(test)]
 mod test_simple_symbol {
     use crate::fixtures;
-    use esri_json::geo_types_n::CoordNumber;
+    use esri_json::CoordNumber;
     use esri_json::geometry::{CoordXy, Point, Polygon, Polyline};
     use esri_json::js_sdk::graphic;
     use rstest::rstest;
@@ -85,7 +85,7 @@ mod test_simple_symbol {
 mod test_polygon_symbol_3d {
 
     use crate::fixtures;
-    use esri_json::geo_types_n::CoordNumber;
+    use esri_json::CoordNumber;
     use esri_json::geometry::{CoordXy, Polygon};
     use esri_json::js_sdk::graphic;
     use esri_json::webscene::polygon_symbol_3d::{PolygonSymbol3D, StyleOrigin};
@@ -324,7 +324,7 @@ mod test_polygon_symbol_3d {
 #[cfg(test)]
 mod test_polyline_symbol_3d {
     use crate::fixtures;
-    use esri_json::geo_types_n::CoordNumber;
+    use esri_json::CoordNumber;
     use esri_json::geometry::{CoordXy, Polyline};
     use esri_json::js_sdk::graphic;
     use esri_json::webscene::line_symbol_3d::LineSymbol3D;
@@ -408,7 +408,7 @@ mod test_polyline_symbol_3d {
 #[cfg(test)]
 mod test_point_symbol_3d {
     use crate::fixtures;
-    use esri_json::geo_types_n::CoordNumber;
+    use esri_json::CoordNumber;
     use esri_json::geometry::{CoordXy, Point};
     use esri_json::js_sdk::graphic;
     use esri_json::webscene::point_symbol_3d::PointSymbol3D;
@@ -559,7 +559,7 @@ mod test_point_symbol_3d {
 #[cfg(test)]
 mod test_multipoint_symbol_3d {
     use crate::fixtures;
-    use esri_json::geo_types_n::CoordNumber;
+    use esri_json::CoordNumber;
     use esri_json::geometry::{CoordXy, MultiPoint};
     use esri_json::js_sdk::graphic;
     use esri_json::webscene::point_symbol_3d::PointSymbol3D;
@@ -709,7 +709,7 @@ mod test_multipoint_symbol_3d {
 #[cfg(test)]
 mod test_label_layer {
     use crate::fixtures;
-    use esri_json::geo_types_n::CoordNumber;
+    use esri_json::CoordNumber;
     use esri_json::geometry::CoordXy;
     use esri_json::js_sdk::graphic;
     use esri_json::webscene::label_symbol_3d::*;

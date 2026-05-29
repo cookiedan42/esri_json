@@ -1,4 +1,4 @@
-use crate::geo_types_n::CoordNumber;
+use crate::CoordNumber;
 use crate::geometry::Coord;
 use geo_traits::CoordTrait;
 use serde::{Deserialize, Serialize};

@@ -1,4 +1,4 @@
-use crate::geo_types_n::CoordNumber;
+use crate::CoordNumber;
 pub use crate::geometry::{Coord, CoordXy, CoordXym, CoordXyz, CoordXyzm};
 use geo_traits::CoordTrait;
 macro_rules! FromIntoGeoCoord {

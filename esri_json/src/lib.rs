@@ -28,7 +28,7 @@
 pub(crate) mod common;
 
 #[cfg(feature = "geo_types")]
-pub mod geo;
+pub mod geo_types_n;
 
 pub mod geojson;
 
@@ -37,4 +37,54 @@ pub mod js_sdk;
 pub mod webmap;
 pub mod webscene;
 
-pub mod geo_types_n;
+mod private {
+    pub trait Sealed {}
+}
+
+/// A trait for floating point number types (f32 or f64).
+/// This trait is sealed and cannot be implemented outside this crate.
+/// roughly equivalent to [`geo::GeoFloat`](geo::GeoFloat)
+#[cfg(feature = "geo_types")]
+pub trait CoordNumber:
+    private::Sealed
+    + Copy
+    + Clone
+    + PartialEq
+    + PartialOrd
+    + std::fmt::Debug
+    + Default
+    + num_traits::Num
+    + num_traits::sign::Signed
+    + num_traits::Bounded
+    + num_traits::FromPrimitive
+    + num_traits::ToPrimitive
+    + num_traits::NumCast
+    + num_traits::Zero
+    + geo::GeoFloat
+{
+}
+
+#[cfg(not(feature = "geo_types"))]
+pub trait CoordNumber:
+    private::Sealed
+    + Copy
+    + Clone
+    + PartialEq
+    + PartialOrd
+    + std::fmt::Debug
+    + Default
+    + num_traits::Num
+    + num_traits::sign::Signed
+    + num_traits::Bounded
+    + num_traits::FromPrimitive
+    + num_traits::ToPrimitive
+    + num_traits::NumCast
+    + num_traits::Zero
+{
+}
+
+impl private::Sealed for f32 {}
+impl private::Sealed for f64 {}
+
+impl CoordNumber for f32 {}
+impl CoordNumber for f64 {}

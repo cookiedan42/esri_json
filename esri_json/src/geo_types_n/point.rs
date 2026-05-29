@@ -51,7 +51,7 @@ impl_from!(Point<C>, geo_types::Point<C::T>);
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::geo_types_n::CoordNumber;
+    use crate::CoordNumber;
     use crate::geometry::*;
     use rstest::rstest;
 

@@ -3,7 +3,7 @@ use super::{
     GeometryCollection, Line, LineString, MultiLineString, MultiPoint, MultiPolygon, Point,
     Polygon, Rect, Triangle,
 };
-use crate::geo_types_n::CoordNumber;
+use crate::CoordNumber;
 use geo_traits::CoordTrait;
 use geo_traits::GeometryTrait;
 

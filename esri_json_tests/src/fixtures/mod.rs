@@ -1,4 +1,4 @@
-use esri_json::geo_types_n::CoordNumber;
+use esri_json::CoordNumber;
 use esri_json::geometry::*;
 
 pub fn default_point<C>() -> Point<C>

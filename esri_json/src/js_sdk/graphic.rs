@@ -222,7 +222,7 @@ impl From<MeshSymbol3D> for MeshSymbolSceneView {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::geo_types_n::CoordNumber;
+    use crate::CoordNumber;
     use crate::geometry::*;
     use esri_json_test_fixtures::graphic::*;
     use rstest::rstest;
