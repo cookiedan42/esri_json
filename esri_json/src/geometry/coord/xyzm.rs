@@ -54,6 +54,12 @@ where
                 z: array[2],
                 m: None,
             },
+            2 => Self {
+                x: array[0],
+                y: array[1],
+                z: T::zero(),
+                m: None,
+            },
             _ => panic!("Expected array of length 3 or 4, got {}", array.len()),
         }
     }

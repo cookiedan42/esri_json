@@ -25,4 +25,5 @@ serde_json = {workspace=true}
 
 [dev-dependencies]
 esri_json_test_fixtures = { path = "../esri_json_test_fixtures" }
+esri_json_macro = { path = "../esri_json_macro" }
 rstest = {workspace = true}

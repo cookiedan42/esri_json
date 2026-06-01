@@ -35,10 +35,23 @@ where
     T: CoordNumber,
 {
     fn from(array: Vec<T>) -> Self {
-        Self {
-            x: array[0],
-            y: array[1],
-            z: array[2],
+        match array.len() {
+            2 => Self {
+                x: array[0],
+                y: array[1],
+                z: T::zero(),
+            },
+            3 => Self {
+                x: array[0],
+                y: array[1],
+                z: array[2],
+            },
+            4 => Self {
+                x: array[0],
+                y: array[1],
+                z: array[2],
+            },
+            _ => panic!("Expected array of length 3, got {}", array.len()),
         }
     }
 }
@@ -92,5 +105,17 @@ where
             2 => self.z,
             _ => panic!("Expected 3 values, got {}", n),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn coord_xyz() {
+        let _val2: CoordXyz<f64> = vec![0.0, 0.0].into();
+        let _val3: CoordXyz<f64> = vec![0.0, 0.0, 0.0].into();
+        let _val4: CoordXyz<f64> = vec![0.0, 0.0, 0.0, 0.0].into();
     }
 }

@@ -57,6 +57,7 @@ impl<C: Coord> Point<C> {
     }
 }
 
+/// Helper type for serialization, because Point holds each coord value separately
 #[derive(Serialize, Deserialize)]
 #[serde(bound(
     serialize = "<C as CoordTrait>::T: Serialize",
@@ -102,71 +103,39 @@ impl<C: Coord> From<Point<C>> for PointHelper<C> {
     }
 }
 
-// impl<C: Coord> Serialize for Point<C>
-// where
-//     <C as CoordTrait>::T: Serialize,
-// {
-//     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-//     where
-//         S: serde::Serializer,
-//     {
-//         let helper: PointHelper<<C as CoordTrait>::T, C> = Point::clone(self).into();
-//         helper.serialize(serializer)
-//     }
-// }
-
-// impl<'de, C: Coord> Deserialize<'de> for Point<C>
-// where
-//     <C as CoordTrait>::T: Deserialize<'de>,
-// {
-//     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-//     where
-//         D: serde::Deserializer<'de>,
-//     {
-//         let helper = PointHelper::<<C as CoordTrait>::T, C>::deserialize(deserializer)?;
-//         Ok(helper.into())
-//     }
-// }
-
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::CoordNumber;
     use crate::geometry::*;
+    use esri_json_macro::test_all_coord_types;
     use esri_json_test_fixtures::point::*;
-    use rstest::rstest;
-    use serde::{Serialize, de::DeserializeOwned};
 
-    #[rstest]
-    #[case::f32(std::marker::PhantomData::<f32>)]
-    #[case::f64(std::marker::PhantomData::<f64>)]
-    fn points<T>(#[case] _phantom: std::marker::PhantomData<T>)
-    where
-        T: CoordNumber + From<f32> + Serialize + DeserializeOwned,
-    {
+    #[test_all_coord_types]
+    fn points<C>(#[case] _phantom: std::marker::PhantomData<C>) {
         let xy = point_xy();
         let xyz = point_xyz();
         let xym = point_xym();
         let xyzm = point_xyzm();
 
-        let de: Point<CoordXy<T>> = serde_json::from_str(&xy).unwrap();
+        let de: Point<C> = serde_json::from_str(&xy).unwrap();
         let ser = serde_json::to_string(&de).unwrap();
-        let serde: Point<CoordXy<T>> = serde_json::from_str(&ser).unwrap();
+        let serde: Point<C> = serde_json::from_str(&ser).unwrap();
         assert_eq!(serde, de);
 
-        let de: Point<CoordXy<T>> = serde_json::from_str(&xyz).unwrap();
+        let de: Point<C> = serde_json::from_str(&xyz).unwrap();
         let ser = serde_json::to_string(&de).unwrap();
-        let serde: Point<CoordXy<T>> = serde_json::from_str(&ser).unwrap();
+        let serde: Point<C> = serde_json::from_str(&ser).unwrap();
         assert_eq!(serde, de);
 
-        let de: Point<CoordXy<T>> = serde_json::from_str(&xym).unwrap();
+        let de: Point<C> = serde_json::from_str(&xym).unwrap();
         let ser = serde_json::to_string(&de).unwrap();
-        let serde: Point<CoordXy<T>> = serde_json::from_str(&ser).unwrap();
+        let serde: Point<C> = serde_json::from_str(&ser).unwrap();
         assert_eq!(serde, de);
 
-        let de: Point<CoordXy<T>> = serde_json::from_str(&xyzm).unwrap();
+        let de: Point<C> = serde_json::from_str(&xyzm).unwrap();
         let ser = serde_json::to_string(&de).unwrap();
-        let serde: Point<CoordXy<T>> = serde_json::from_str(&ser).unwrap();
+        let serde: Point<C> = serde_json::from_str(&ser).unwrap();
         assert_eq!(serde, de);
     }
 }

@@ -56,30 +56,19 @@ mod tests {
     use super::*;
     use crate::CoordNumber;
     use crate::geometry::*;
+    use esri_json_macro::{test_all_coord_types, test_all_number_types};
     use esri_json_test_fixtures::polygon::*;
-    use rstest::rstest;
-    use serde::{Serialize, de::DeserializeOwned};
 
-    #[rstest]
-    #[case::f32(std::marker::PhantomData::<f32>)]
-    #[case::f64(std::marker::PhantomData::<f64>)]
-    fn empty_polygon<T>(#[case] _phantom: std::marker::PhantomData<T>)
-    where
-        T: CoordNumber + From<f32> + Serialize + DeserializeOwned,
-    {
-        let de: Polygon<CoordXy<T>> = serde_json::from_str(&empty()).unwrap();
+    #[test_all_coord_types]
+    fn empty_polygon<C>() {
+        let de: Polygon<C> = serde_json::from_str(&empty()).unwrap();
         let ser = serde_json::to_string(&de).unwrap();
-        let serde: Polygon<CoordXy<T>> = serde_json::from_str(&ser).unwrap();
+        let serde: Polygon<C> = serde_json::from_str(&ser).unwrap();
         assert_eq!(serde, de);
     }
 
-    #[rstest]
-    #[case::f32(std::marker::PhantomData::<f32>)]
-    #[case::f64(std::marker::PhantomData::<f64>)]
-    fn polygon<T>(#[case] _phantom: std::marker::PhantomData<T>)
-    where
-        T: CoordNumber + From<f32> + Serialize + DeserializeOwned,
-    {
+    #[test_all_number_types]
+    fn polygon<T>() {
         let de: Polygon<CoordXy<T>> = serde_json::from_str(&xy()).unwrap();
         let ser = serde_json::to_string(&de).unwrap();
         let serde: Polygon<CoordXy<T>> = serde_json::from_str(&ser).unwrap();
@@ -87,7 +76,6 @@ mod tests {
 
         let de: Polygon<CoordXyz<T>> = serde_json::from_str(&xyz()).unwrap();
         let ser = serde_json::to_string(&de).unwrap();
-        println!("{}", ser);
         let serde: Polygon<CoordXyz<T>> = serde_json::from_str(&ser).unwrap();
         assert_eq!(serde, de);
     }

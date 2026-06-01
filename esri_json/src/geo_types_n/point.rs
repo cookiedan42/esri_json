@@ -53,23 +53,17 @@ mod tests {
     use super::*;
     use crate::CoordNumber;
     use crate::geometry::*;
-    use rstest::rstest;
+    use esri_json_macro::test_all_coord_types;
 
-    #[rstest]
-    #[case::f32(std::marker::PhantomData::<f32>)]
-    #[case::f64(std::marker::PhantomData::<f64>)]
-    fn points<T>(#[case] _phantom: std::marker::PhantomData<T>)
-    where
-        T: CoordNumber + From<f32>,
-    {
-        let _p: geo_types::Point<T> =
-            Point::<CoordXy<T>>(CoordXy::from_coord_fields(0.0, 0.0, None, None)).into();
-        let _p: geo_types::Point<T> =
-            Point::<CoordXyz<T>>(CoordXyz::from_coord_fields(0.0, 0.0, Some(0.0), None)).into();
-        let _p: geo_types::Point<T> =
-            Point::<CoordXym<T>>(CoordXym::from_coord_fields(0.0, 0.0, None, Some(0.0))).into();
-        let _p: geo_types::Point<T> =
-            Point::<CoordXyzm<T>>(CoordXyzm::from_coord_fields(0.0, 0.0, Some(0.0), Some(0.0)))
-                .into();
+    #[test_all_coord_types]
+    fn points<C>() {
+        let _p: geo_types::Point<C::T> =
+            Point::<C>(C::from_coord_fields(0.0, 0.0, None, None)).into();
+        let _p: geo_types::Point<C::T> =
+            Point::<C>(C::from_coord_fields(0.0, 0.0, Some(0.0), None)).into();
+        let _p: geo_types::Point<C::T> =
+            Point::<C>(C::from_coord_fields(0.0, 0.0, None, Some(0.0))).into();
+        let _p: geo_types::Point<C::T> =
+            Point::<C>(C::from_coord_fields(0.0, 0.0, Some(0.0), Some(0.0))).into();
     }
 }

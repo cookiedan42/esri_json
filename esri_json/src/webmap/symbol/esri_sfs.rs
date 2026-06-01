@@ -99,23 +99,3 @@ mod tests {
         assert_eq!(serde, de);
     }
 }
-
-/*
-
-Simple Fill Symbol (esriSFS)
-
-Simple fill symbols that can be used to symbolize polygon geometries.
-
-Referenced by: GeoRSS Layer (GeoRSS), Predominance Renderer, symbol, Video Layer Drawing Info
-Properties
-Property 	Details
-color 	Color is represented as a four-element array. The four elements represent values for red, green, blue, and alpha in that order. Values range from 0 through 255. If color is undefined for a symbol, the color value is null.
-outline 	Sets the outline of the fill symbol.
-style 	String value representing the simple fill symbol type.
-Valid values: esriSFSBackwardDiagonal, esriSFSCross, esriSFSDiagonalCross, esriSFSForwardDiagonal, esriSFSHorizontal, esriSFSNull, esriSFSSolid, esriSFSVertical
-type 	Specifies the type of symbol used.
-Valid value of this property esriSFS
-Simple Fill Symbol Example
-
-
-  */

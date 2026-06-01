@@ -10,11 +10,12 @@ pub use xyzm::CoordXyzm;
 
 use crate::CoordNumber;
 use geo_traits::CoordTrait;
+use std::fmt::Debug;
 
 /// Coord is the primitive type for all coordinate types
 /// It has no spatial reference
 /// Optional Z and M values
-pub trait Coord: Copy + CoordTrait<T: CoordNumber> {
+pub trait Coord: Debug + Copy + CoordTrait<T: CoordNumber> {
     fn dim() -> geo_traits::Dimensions;
     fn has_z() -> bool;
     fn has_m() -> bool;

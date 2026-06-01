@@ -48,7 +48,7 @@ where
 {
     fn from(array: Vec<T>) -> Self {
         match array.len() {
-            2 => Self {
+            2 | 3 | 4 => Self {
                 x: array[0],
                 y: array[1],
             },

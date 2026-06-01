@@ -14,3 +14,4 @@ serde = {workspace = true}
 
 [dev-dependencies]
 rstest = {workspace = true}
+esri_json_macro = { path = "../esri_json_macro" }

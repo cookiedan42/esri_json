@@ -3,22 +3,16 @@
 mod test_simple_symbol {
     use crate::fixtures;
     use esri_json::CoordNumber;
-    use esri_json::geometry::{CoordXy, Point, Polygon, Polyline};
+    use esri_json::geometry::*;
     use esri_json::js_sdk::graphic;
-    use rstest::rstest;
-    use serde::{Serialize, de::DeserializeOwned};
+    use esri_json_macro::test_all_coord_types;
     use serde_json::Map;
 
-    #[rstest]
-    #[case::f32(std::marker::PhantomData::<f32>)]
-    #[case::f64(std::marker::PhantomData::<f64>)]
-    fn simple_marker_symbol<T>(#[case] _phantom: std::marker::PhantomData<T>)
-    where
-        T: CoordNumber + From<f32> + Serialize + DeserializeOwned,
-    {
+    #[test_all_coord_types]
+    fn simple_marker_symbol<C>() {
         use esri_json::webmap::esri_sms::*;
 
-        let geometry = fixtures::default_point::<CoordXy<T>>();
+        let geometry = fixtures::default_point::<C>();
 
         let sms = EsriSMS::default()
             .angle(1.0)
@@ -29,21 +23,16 @@ mod test_simple_symbol {
             .xoffset(1.0)
             .yoffset(1.0);
 
-        let _g = graphic::Graphic::<Point<CoordXy<T>>>::new(geometry)
+        let _g = graphic::Graphic::<Point<C>>::new(geometry)
             .attributes(Map::new())
             .symbol(sms);
     }
 
-    #[rstest]
-    #[case::f32(std::marker::PhantomData::<f32>)]
-    #[case::f64(std::marker::PhantomData::<f64>)]
-    fn simple_line_symbol<T>(#[case] _phantom: std::marker::PhantomData<T>)
-    where
-        T: CoordNumber + From<f32> + Serialize + DeserializeOwned,
-    {
+    #[test_all_coord_types]
+    fn simple_line_symbol<C>() {
         use esri_json::webmap::esri_sls::*;
 
-        let geometry = fixtures::default_polyline::<CoordXy<T>>();
+        let geometry = fixtures::default_polyline::<C>();
 
         let marker = Marker::default().placement(Placement::Begin);
 
@@ -53,28 +42,23 @@ mod test_simple_symbol {
             .style(Style::esriSLSDot)
             .width(1.0);
 
-        let _g = graphic::Graphic::<Polyline<CoordXy<T>>>::new(geometry)
+        let _g = graphic::Graphic::<Polyline<C>>::new(geometry)
             .attributes(Map::new())
             .symbol(sls);
     }
 
-    #[rstest]
-    #[case::f32(std::marker::PhantomData::<f32>)]
-    #[case::f64(std::marker::PhantomData::<f64>)]
-    fn simple_polygon_symbol<T>(#[case] _phantom: std::marker::PhantomData<T>)
-    where
-        T: CoordNumber + From<f32> + Serialize + DeserializeOwned,
-    {
+    #[test_all_coord_types]
+    fn simple_polygon_symbol<C>() {
         use esri_json::webmap::esri_sfs::*;
 
-        let geometry = fixtures::default_polygon::<CoordXy<T>>();
+        let geometry = fixtures::default_polygon::<C>();
 
         let sfs = EsriSFS::default()
             .color(Color::Rgb(1, 1, 1))
             .outline(Outline::default())
             .style(Style::esriSFSSolid);
 
-        let _g = graphic::Graphic::<Polygon<CoordXy<T>>>::new(geometry)
+        let _g = graphic::Graphic::<Polygon<C>>::new(geometry)
             .attributes(Map::new())
             .symbol(sfs);
     }
@@ -86,23 +70,17 @@ mod test_polygon_symbol_3d {
 
     use crate::fixtures;
     use esri_json::CoordNumber;
-    use esri_json::geometry::{CoordXy, Polygon};
+    use esri_json::geometry::*;
     use esri_json::js_sdk::graphic;
     use esri_json::webscene::polygon_symbol_3d::{PolygonSymbol3D, StyleOrigin};
-    use rstest::rstest;
-    use serde::{Serialize, de::DeserializeOwned};
+    use esri_json_macro::test_all_coord_types;
     use serde_json::Map;
 
-    #[rstest]
-    #[case::f32(std::marker::PhantomData::<f32>)]
-    #[case::f64(std::marker::PhantomData::<f64>)]
-    fn test_polygon_extrude<T>(#[case] _phantom: std::marker::PhantomData<T>)
-    where
-        T: CoordNumber + From<f32> + Serialize + DeserializeOwned,
-    {
+    #[test_all_coord_types]
+    fn test_polygon_extrude<C>() {
         use esri_json::webscene::extrude_symbol_3d_layer::*;
 
-        let geometry = fixtures::default_polygon::<CoordXy<T>>();
+        let geometry = fixtures::default_polygon::<C>();
 
         let edges = Edges::new_sketch()
             .color(Color::Rgb(1, 1, 1))
@@ -118,23 +96,18 @@ mod test_polygon_symbol_3d {
 
         let layers: PolygonSymbol3D = layer.into();
 
-        let _g = graphic::Graphic::<Polygon<CoordXy<T>>>::new(geometry)
+        let _g = graphic::Graphic::<Polygon<C>>::new(geometry)
             .attributes(Map::new())
             .symbol(layers);
 
         println!("{}", serde_json::to_string(&_g).unwrap());
     }
 
-    #[rstest]
-    #[case::f32(std::marker::PhantomData::<f32>)]
-    #[case::f64(std::marker::PhantomData::<f64>)]
-    fn test_polygon_fill<T>(#[case] _phantom: std::marker::PhantomData<T>)
-    where
-        T: CoordNumber + From<f32> + Serialize + DeserializeOwned,
-    {
+    #[test_all_coord_types]
+    fn test_polygon_fill<C>() {
         use esri_json::webscene::fill_symbol_3d_layer::*;
 
-        let geometry = fixtures::default_polygon::<CoordXy<T>>();
+        let geometry = fixtures::default_polygon::<C>();
 
         let material = Material::default()
             .color(Color::Rgb(1, 1, 1))
@@ -156,21 +129,16 @@ mod test_polygon_symbol_3d {
 
         let layers: PolygonSymbol3D = layer.into();
 
-        let _g = graphic::Graphic::<Polygon<CoordXy<T>>>::new(geometry)
+        let _g = graphic::Graphic::<Polygon<C>>::new(geometry)
             .attributes(Map::new())
             .symbol(layers);
     }
 
-    #[rstest]
-    #[case::f32(std::marker::PhantomData::<f32>)]
-    #[case::f64(std::marker::PhantomData::<f64>)]
-    fn test_polygon_icon<T>(#[case] _phantom: std::marker::PhantomData<T>)
-    where
-        T: CoordNumber + From<f32> + Serialize + DeserializeOwned,
-    {
+    #[test_all_coord_types]
+    fn test_polygon_icon<C>() {
         use esri_json::webscene::icon_symbol_3d_layer::*;
 
-        let geometry = fixtures::default_polygon::<CoordXy<T>>();
+        let geometry = fixtures::default_polygon::<C>();
 
         let material = Material::default()
             .color(Color::Rgb(1, 1, 1))
@@ -198,21 +166,16 @@ mod test_polygon_symbol_3d {
 
         let layers: PolygonSymbol3D = layer.into();
 
-        let _g = graphic::Graphic::<Polygon<CoordXy<T>>>::new(geometry)
+        let _g = graphic::Graphic::<Polygon<C>>::new(geometry)
             .attributes(Map::new())
             .symbol(layers);
     }
 
-    #[rstest]
-    #[case::f32(std::marker::PhantomData::<f32>)]
-    #[case::f64(std::marker::PhantomData::<f64>)]
-    fn test_polygon_object<T>(#[case] _phantom: std::marker::PhantomData<T>)
-    where
-        T: CoordNumber + From<f32> + Serialize + DeserializeOwned,
-    {
+    #[test_all_coord_types]
+    fn test_polygon_object<C>() {
         use esri_json::webscene::object_symbol_3d_layer::*;
 
-        let geometry = fixtures::default_polygon::<CoordXy<T>>();
+        let geometry = fixtures::default_polygon::<C>();
 
         let material = Material::default()
             .color(Color::Rgb(1, 1, 1))
@@ -241,21 +204,16 @@ mod test_polygon_symbol_3d {
 
         let layers: PolygonSymbol3D = layer.into();
 
-        let _g = graphic::Graphic::<Polygon<CoordXy<T>>>::new(geometry)
+        let _g = graphic::Graphic::<Polygon<C>>::new(geometry)
             .attributes(Map::new())
             .symbol(layers);
     }
 
-    #[rstest]
-    #[case::f32(std::marker::PhantomData::<f32>)]
-    #[case::f64(std::marker::PhantomData::<f64>)]
-    fn test_polygon_water<T>(#[case] _phantom: std::marker::PhantomData<T>)
-    where
-        T: CoordNumber + From<f32> + Serialize + DeserializeOwned,
-    {
+    #[test_all_coord_types]
+    fn test_polygon_water<C>() {
         use esri_json::webscene::water_symbol_3d_layer::*;
 
-        let geometry = fixtures::default_polygon::<CoordXy<T>>();
+        let geometry = fixtures::default_polygon::<C>();
 
         let layer = WaterSymbol3DLayer::default()
             .color(Color::Rgb(1, 1, 1))
@@ -265,19 +223,14 @@ mod test_polygon_symbol_3d {
 
         let layers: PolygonSymbol3D = layer.into();
 
-        let _g = graphic::Graphic::<Polygon<CoordXy<T>>>::new(geometry)
+        let _g = graphic::Graphic::<Polygon<C>>::new(geometry)
             .attributes(Map::new())
             .symbol(layers);
     }
 
-    #[rstest]
-    #[case::f32(std::marker::PhantomData::<f32>)]
-    #[case::f64(std::marker::PhantomData::<f64>)]
-    fn test_polygon_multi<T>(#[case] _phantom: std::marker::PhantomData<T>)
-    where
-        T: CoordNumber + From<f32> + Serialize + DeserializeOwned,
-    {
-        let geometry = fixtures::default_polygon::<CoordXy<T>>();
+    #[test_all_coord_types]
+    fn test_polygon_multi<C>() {
+        let geometry = fixtures::default_polygon::<C>();
 
         let water_layer = {
             use esri_json::webscene::water_symbol_3d_layer::*;
@@ -314,7 +267,7 @@ mod test_polygon_symbol_3d {
             .symbol_layers(vec![extrude_layer.into(), water_layer.into()])
             .style_origin(style_origin);
 
-        let _g = graphic::Graphic::<Polygon<CoordXy<T>>>::new(geometry)
+        let _g = graphic::Graphic::<Polygon<C>>::new(geometry)
             .attributes(Map::new())
             .symbol(layers);
     }
@@ -325,23 +278,17 @@ mod test_polygon_symbol_3d {
 mod test_polyline_symbol_3d {
     use crate::fixtures;
     use esri_json::CoordNumber;
-    use esri_json::geometry::{CoordXy, Polyline};
+    use esri_json::geometry::*;
     use esri_json::js_sdk::graphic;
     use esri_json::webscene::line_symbol_3d::LineSymbol3D;
-    use rstest::rstest;
-    use serde::{Serialize, de::DeserializeOwned};
+    use esri_json_macro::test_all_coord_types;
     use serde_json::Map;
 
-    #[rstest]
-    #[case::f32(std::marker::PhantomData::<f32>)]
-    #[case::f64(std::marker::PhantomData::<f64>)]
-    fn test_polyline_line<T>(#[case] _phantom: std::marker::PhantomData<T>)
-    where
-        T: CoordNumber + From<f32> + Serialize + DeserializeOwned,
-    {
+    #[test_all_coord_types]
+    fn test_polyline_line<C>() {
         use esri_json::webscene::line_symbol_3d_layer::*;
 
-        let geometry = fixtures::default_polyline::<CoordXy<T>>();
+        let geometry = fixtures::default_polyline::<C>();
 
         let line_marker = LineMarker::default()
             .placement(Placement::Begin)
@@ -363,21 +310,16 @@ mod test_polyline_symbol_3d {
 
         let layers: LineSymbol3D = layer.into();
 
-        let _g = graphic::Graphic::<Polyline<CoordXy<T>>>::new(geometry)
+        let _g = graphic::Graphic::<Polyline<C>>::new(geometry)
             .attributes(Map::new())
             .symbol(layers);
     }
 
-    #[rstest]
-    #[case::f32(std::marker::PhantomData::<f32>)]
-    #[case::f64(std::marker::PhantomData::<f64>)]
-    fn test_polyline_path<T>(#[case] _phantom: std::marker::PhantomData<T>)
-    where
-        T: CoordNumber + From<f32> + Serialize + DeserializeOwned,
-    {
+    #[test_all_coord_types]
+    fn test_polyline_path<C>() {
         use esri_json::webscene::path_symbol_3d_layer::*;
 
-        let geometry = fixtures::default_polyline::<CoordXy<T>>();
+        let geometry = fixtures::default_polyline::<C>();
 
         let material = Material::default()
             .color(Color::Rgb(1, 1, 1))
@@ -398,7 +340,7 @@ mod test_polyline_symbol_3d {
 
         let layers: LineSymbol3D = layer.into();
 
-        let _g = graphic::Graphic::<Polyline<CoordXy<T>>>::new(geometry)
+        let _g = graphic::Graphic::<Polyline<C>>::new(geometry)
             .attributes(Map::new())
             .symbol(layers);
     }
@@ -409,23 +351,17 @@ mod test_polyline_symbol_3d {
 mod test_point_symbol_3d {
     use crate::fixtures;
     use esri_json::CoordNumber;
-    use esri_json::geometry::{CoordXy, Point};
+    use esri_json::geometry::*;
     use esri_json::js_sdk::graphic;
     use esri_json::webscene::point_symbol_3d::PointSymbol3D;
-    use rstest::rstest;
-    use serde::{Serialize, de::DeserializeOwned};
+    use esri_json_macro::test_all_coord_types;
     use serde_json::Map;
 
-    #[rstest]
-    #[case::f32(std::marker::PhantomData::<f32>)]
-    #[case::f64(std::marker::PhantomData::<f64>)]
-    fn test_point_icon<T>(#[case] _phantom: std::marker::PhantomData<T>)
-    where
-        T: CoordNumber + From<f32> + Serialize + DeserializeOwned,
-    {
+    #[test_all_coord_types]
+    fn test_point_icon<C>() {
         use esri_json::webscene::icon_symbol_3d_layer::*;
 
-        let geometry = fixtures::default_point::<CoordXy<T>>();
+        let geometry = fixtures::default_point::<C>();
 
         let material = Material::default()
             .color(Color::Rgb(1, 1, 1))
@@ -453,21 +389,16 @@ mod test_point_symbol_3d {
 
         let layers: PointSymbol3D = layer.into();
 
-        let _g = graphic::Graphic::<Point<CoordXy<T>>>::new(geometry)
+        let _g = graphic::Graphic::<Point<C>>::new(geometry)
             .attributes(Map::new())
             .symbol(layers);
     }
 
-    #[rstest]
-    #[case::f32(std::marker::PhantomData::<f32>)]
-    #[case::f64(std::marker::PhantomData::<f64>)]
-    fn test_point_object<T>(#[case] _phantom: std::marker::PhantomData<T>)
-    where
-        T: CoordNumber + From<f32> + Serialize + DeserializeOwned,
-    {
+    #[test_all_coord_types]
+    fn test_point_object<C>() {
         use esri_json::webscene::object_symbol_3d_layer::*;
 
-        let geometry = fixtures::default_point::<CoordXy<T>>();
+        let geometry = fixtures::default_point::<C>();
 
         let material = Material::default()
             .color(Color::Rgb(1, 1, 1))
@@ -496,21 +427,16 @@ mod test_point_symbol_3d {
 
         let layers: PointSymbol3D = layer.into();
 
-        let _g = graphic::Graphic::<Point<CoordXy<T>>>::new(geometry)
+        let _g = graphic::Graphic::<Point<C>>::new(geometry)
             .attributes(Map::new())
             .symbol(layers);
     }
 
-    #[rstest]
-    #[case::f32(std::marker::PhantomData::<f32>)]
-    #[case::f64(std::marker::PhantomData::<f64>)]
-    fn test_point_text<T>(#[case] _phantom: std::marker::PhantomData<T>)
-    where
-        T: CoordNumber + From<f32> + Serialize + DeserializeOwned,
-    {
+    #[test_all_coord_types]
+    fn test_point_text<C>() {
         use esri_json::webscene::text_symbol_3d_layer::*;
 
-        let geometry = fixtures::default_point::<CoordXy<T>>();
+        let geometry = fixtures::default_point::<C>();
 
         let background = Background::default()
             .color(Color::Rgb(1, 1, 1))
@@ -549,7 +475,7 @@ mod test_point_symbol_3d {
 
         let layers: PointSymbol3D = layer.into();
 
-        let _g = graphic::Graphic::<Point<CoordXy<T>>>::new(geometry)
+        let _g = graphic::Graphic::<Point<C>>::new(geometry)
             .attributes(Map::new())
             .symbol(layers);
     }
@@ -560,23 +486,17 @@ mod test_point_symbol_3d {
 mod test_multipoint_symbol_3d {
     use crate::fixtures;
     use esri_json::CoordNumber;
-    use esri_json::geometry::{CoordXy, MultiPoint};
+    use esri_json::geometry::*;
     use esri_json::js_sdk::graphic;
     use esri_json::webscene::point_symbol_3d::PointSymbol3D;
-    use rstest::rstest;
-    use serde::{Serialize, de::DeserializeOwned};
+    use esri_json_macro::test_all_coord_types;
     use serde_json::Map;
 
-    #[rstest]
-    #[case::f32(std::marker::PhantomData::<f32>)]
-    #[case::f64(std::marker::PhantomData::<f64>)]
-    fn test_point_icon<T>(#[case] _phantom: std::marker::PhantomData<T>)
-    where
-        T: CoordNumber + From<f32> + Serialize + DeserializeOwned,
-    {
+    #[test_all_coord_types]
+    fn test_point_icon<C>() {
         use esri_json::webscene::icon_symbol_3d_layer::*;
 
-        let geometry = fixtures::default_multipoint::<CoordXy<T>>();
+        let geometry = fixtures::default_multipoint::<C>();
 
         let material = Material::default()
             .color(Color::Rgb(1, 1, 1))
@@ -603,21 +523,16 @@ mod test_multipoint_symbol_3d {
             .size(1.0);
         let layers: PointSymbol3D = layer.into();
 
-        let _g = graphic::Graphic::<MultiPoint<CoordXy<T>>>::new(geometry)
+        let _g = graphic::Graphic::<MultiPoint<C>>::new(geometry)
             .attributes(Map::new())
             .symbol(layers);
     }
 
-    #[rstest]
-    #[case::f32(std::marker::PhantomData::<f32>)]
-    #[case::f64(std::marker::PhantomData::<f64>)]
-    fn test_point_object<T>(#[case] _phantom: std::marker::PhantomData<T>)
-    where
-        T: CoordNumber + From<f32> + Serialize + DeserializeOwned,
-    {
+    #[test_all_coord_types]
+    fn test_point_object<C>() {
         use esri_json::webscene::object_symbol_3d_layer::*;
 
-        let geometry = fixtures::default_multipoint::<CoordXy<T>>();
+        let geometry = fixtures::default_multipoint::<C>();
 
         let material = Material::default()
             .color(Color::Rgb(1, 1, 1))
@@ -646,21 +561,16 @@ mod test_multipoint_symbol_3d {
 
         let layers: PointSymbol3D = layer.into();
 
-        let _g = graphic::Graphic::<MultiPoint<CoordXy<T>>>::new(geometry)
+        let _g = graphic::Graphic::<MultiPoint<C>>::new(geometry)
             .attributes(Map::new())
             .symbol(layers);
     }
 
-    #[rstest]
-    #[case::f32(std::marker::PhantomData::<f32>)]
-    #[case::f64(std::marker::PhantomData::<f64>)]
-    fn test_point_text<T>(#[case] _phantom: std::marker::PhantomData<T>)
-    where
-        T: CoordNumber + From<f32> + Serialize + DeserializeOwned,
-    {
+    #[test_all_coord_types]
+    fn test_point_text<C>() {
         use esri_json::webscene::text_symbol_3d_layer::*;
 
-        let geometry = fixtures::default_multipoint::<CoordXy<T>>();
+        let geometry = fixtures::default_multipoint::<C>();
 
         let background = Background::default()
             .color(Color::Rgb(1, 1, 1))
@@ -699,7 +609,7 @@ mod test_multipoint_symbol_3d {
 
         let layers: PointSymbol3D = layer.into();
 
-        let _g = graphic::Graphic::<MultiPoint<CoordXy<T>>>::new(geometry)
+        let _g = graphic::Graphic::<MultiPoint<C>>::new(geometry)
             .attributes(Map::new())
             .symbol(layers);
     }
@@ -710,21 +620,15 @@ mod test_multipoint_symbol_3d {
 mod test_label_layer {
     use crate::fixtures;
     use esri_json::CoordNumber;
-    use esri_json::geometry::CoordXy;
+    use esri_json::geometry::*;
     use esri_json::js_sdk::graphic;
     use esri_json::webscene::label_symbol_3d::*;
     use esri_json::webscene::text_symbol_3d_layer::*;
-    use rstest::rstest;
-    use serde::{Serialize, de::DeserializeOwned};
+    use esri_json_macro::test_all_coord_types;
     use serde_json::Map;
 
-    #[rstest]
-    #[case::f32(std::marker::PhantomData::<f32>)]
-    #[case::f64(std::marker::PhantomData::<f64>)]
-    fn test_point<T>(#[case] _phantom: std::marker::PhantomData<T>)
-    where
-        T: CoordNumber + From<f32> + Serialize + DeserializeOwned,
-    {
+    #[test_all_coord_types]
+    fn test_point<C>() {
         let background = Background::default()
             .color(Color::Rgb(1, 1, 1))
             .transparency(1.0)
@@ -762,16 +666,16 @@ mod test_label_layer {
 
         let layers: LabelSymbol3D = layer.into();
 
-        let _g1 = graphic::Graphic::new(fixtures::default_point::<CoordXy<T>>())
+        let _g1 = graphic::Graphic::new(fixtures::default_point::<C>())
             .attributes(Map::new())
             .symbol(layers.clone());
-        let _g2 = graphic::Graphic::new(fixtures::default_multipoint::<CoordXy<T>>())
+        let _g2 = graphic::Graphic::new(fixtures::default_multipoint::<C>())
             .attributes(Map::new())
             .symbol(layers.clone());
-        let _g3 = graphic::Graphic::new(fixtures::default_polyline::<CoordXy<T>>())
+        let _g3 = graphic::Graphic::new(fixtures::default_polyline::<C>())
             .attributes(Map::new())
             .symbol(layers.clone());
-        let _g4 = graphic::Graphic::new(fixtures::default_polygon::<CoordXy<T>>())
+        let _g4 = graphic::Graphic::new(fixtures::default_polygon::<C>())
             .attributes(Map::new())
             .symbol(layers.clone());
     }

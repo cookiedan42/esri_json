@@ -41,6 +41,7 @@ pub enum LinePattern {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use esri_json_macro::assert_json_roundtrip;
 
     #[test]
     fn test_line_style_pattern_3d() {
@@ -50,9 +51,7 @@ mod tests {
             "style": "dash-dot"
         }
         "#;
-        let de: LinePatternInternal = serde_json::from_str(line_style_pattern_3d).unwrap();
-        let ser = serde_json::to_string(&de).unwrap();
-        let serde: LinePatternInternal = serde_json::from_str(&ser).unwrap();
-        assert_eq!(serde, de);
+
+        assert_json_roundtrip!(LinePatternInternal, line_style_pattern_3d);
     }
 }

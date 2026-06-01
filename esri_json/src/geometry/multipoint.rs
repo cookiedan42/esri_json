@@ -53,17 +53,11 @@ mod tests {
     use super::*;
     use crate::CoordNumber;
     use crate::geometry::*;
+    use esri_json_macro::test_all_number_types;
     use esri_json_test_fixtures::multipoint::*;
-    use rstest::rstest;
-    use serde::{Serialize, de::DeserializeOwned};
 
-    #[rstest]
-    #[case::f32(std::marker::PhantomData::<f32>)]
-    #[case::f64(std::marker::PhantomData::<f64>)]
-    fn multipoint_xy<T>(#[case] _phantom: std::marker::PhantomData<T>)
-    where
-        T: CoordNumber + From<f32> + Serialize + DeserializeOwned,
-    {
+    #[test_all_number_types]
+    fn multipoint_xy<T>() {
         let xy = xy();
 
         let de: MultiPoint<CoordXy<T>> = serde_json::from_str(&xy).unwrap();
@@ -72,13 +66,8 @@ mod tests {
         assert_eq!(serde, de);
     }
 
-    #[rstest]
-    #[case::f32(std::marker::PhantomData::<f32>)]
-    #[case::f64(std::marker::PhantomData::<f64>)]
-    fn multipoint_xyz<T>(#[case] _phantom: std::marker::PhantomData<T>)
-    where
-        T: CoordNumber + From<f32> + Serialize + DeserializeOwned,
-    {
+    #[test_all_number_types]
+    fn multipoint_xyz<T>() {
         let xyz = xyz();
 
         let de: MultiPoint<CoordXyz<T>> = serde_json::from_str(&xyz).unwrap();
