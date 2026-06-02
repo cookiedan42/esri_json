@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 /// Base Coordinate type with X, Y and Z coordinates
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Copy)]
-#[serde(into = "Vec<T>", from = "Vec<T>")]
+#[serde(into = "[T;3]", from = "Vec<T>")]
 pub struct CoordXyz<T>
 where
     T: CoordNumber,
@@ -14,22 +14,24 @@ where
     y: T,
     z: T,
 }
-impl<T> From<&CoordXyz<T>> for Vec<T>
+impl<T> From<&CoordXyz<T>> for [T; 3]
 where
     T: CoordNumber,
 {
     fn from(val: &CoordXyz<T>) -> Self {
-        vec![val.x, val.y, val.z]
+        [val.x, val.y, val.z]
     }
 }
-impl<T> From<CoordXyz<T>> for Vec<T>
+
+impl<T> From<CoordXyz<T>> for [T; 3]
 where
     T: CoordNumber,
 {
     fn from(val: CoordXyz<T>) -> Self {
-        (&val).into()
+        [val.x, val.y, val.z]
     }
 }
+
 impl<T> From<Vec<T>> for CoordXyz<T>
 where
     T: CoordNumber,

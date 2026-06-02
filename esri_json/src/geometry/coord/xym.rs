@@ -35,6 +35,7 @@ where
         (&val).into()
     }
 }
+
 impl<T> From<Vec<T>> for CoordXym<T>
 where
     T: CoordNumber,
