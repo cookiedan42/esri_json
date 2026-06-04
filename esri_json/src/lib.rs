@@ -8,7 +8,7 @@
 //! use esri_json::webmap::esri_sms::*;
 //! use serde_json::Map;
 //!
-//! let geometry: Point<CoordXy> = Point::new(CoordXy::new(0.0, 0.0), None);
+//! let geometry: Point<CoordXy<f64>> = Point::new(CoordXy::new(0.0, 0.0), None);
 //!
 //! let sms = EsriSMS::default()
 //!     .angle(1.0)
@@ -19,7 +19,7 @@
 //!     .xoffset(1.0)
 //!     .yoffset(1.0);
 //!
-//! let _g = graphic::Graphic::<Point<CoordXy>>::new(geometry)
+//! let _g = graphic::Graphic::<Point<CoordXy<f64>>>::new(geometry)
 //!     .attributes(Map::new())
 //!     .symbol(sms);
 //! ```
