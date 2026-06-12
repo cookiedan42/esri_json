@@ -52,3 +52,7 @@ pub trait Coord: Debug + Copy + CoordTrait<T: CoordNumber> {
     where
         C: Into<<Self as CoordTrait>::T>;
 }
+
+pub trait FromCoordTrait<C: CoordTrait>: Sized {
+    fn from_coord_trait(c: C) -> Self;
+}

@@ -1,5 +1,5 @@
 use crate::CoordNumber;
-use crate::geometry::Coord;
+use crate::geometry::{Coord, FromCoordTrait};
 use geo_traits::CoordTrait;
 use serde::{Deserialize, Serialize};
 
@@ -118,6 +118,25 @@ where
             2 => self.z,
             3 => self.m.unwrap_or_else(T::zero),
             _ => panic!("Expected 4 values, got {}", n),
+        }
+    }
+}
+
+impl<T, C> FromCoordTrait<C> for CoordXyzm<T>
+where
+    T: CoordNumber,
+    C: CoordTrait<T = T>,
+{
+    fn from_coord_trait(c: C) -> Self {
+        use geo_traits::Dimensions;
+        match c.dim() {
+            Dimensions::Xy => Self::from_coord_fields(c.x(), c.y(), None, None),
+            Dimensions::Xym => Self::from_coord_fields(c.x(), c.y(), Some(T::zero()), c.nth(3)),
+            Dimensions::Xyz => Self::from_coord_fields(c.x(), c.y(), c.nth(3), None),
+            Dimensions::Xyzm => Self::from_coord_fields(c.x(), c.y(), c.nth(3), c.nth(4)),
+            Dimensions::Unknown(_) => panic!(
+                "Unknown dimension, use `from_coord_fields` to explicity choose dimensions to assign to z and m"
+            ),
         }
     }
 }

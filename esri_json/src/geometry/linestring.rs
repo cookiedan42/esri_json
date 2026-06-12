@@ -20,6 +20,7 @@ impl<C: Coord> LineString<C> {
         Self(self.0.iter().map(|c| c.set_z(z)).collect())
     }
 }
+
 impl<C: Coord> IntoIterator for LineString<C> {
     type Item = C;
     type IntoIter = std::vec::IntoIter<Self::Item>;

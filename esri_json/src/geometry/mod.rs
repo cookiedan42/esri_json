@@ -10,7 +10,7 @@ mod polygon;
 mod polyline;
 mod spatial_reference;
 
-pub use coord::{Coord, CoordXy, CoordXym, CoordXyz, CoordXyzm};
+pub use coord::{Coord, CoordXy, CoordXym, CoordXyz, CoordXyzm, FromCoordTrait};
 use geo_traits::CoordTrait;
 pub use linestring::LineString;
 pub use multipoint::MultiPoint;

@@ -252,3 +252,15 @@ where
 }
 impl_from!(geo_types::Geometry<C::T>, Geometry<C>);
 impl_from!(Geometry<C>, geo_types::Geometry<C::T>);
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::geometry::CoordXy;
+
+    #[test]
+    fn test_from_geometry() {
+        let source = geo::Geometry::Point(geo::Point::new(0.0, 0.0));
+        let _target: Geometry<CoordXy<f64>> = source.into();
+    }
+}

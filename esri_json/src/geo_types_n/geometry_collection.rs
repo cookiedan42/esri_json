@@ -22,18 +22,48 @@ impl<C: Coord> GeometryCollectionTrait for GeometryCollection<C> {
 
 impl<C: Coord> From<&geo_types::GeometryCollection<C::T>> for GeometryCollection<C>
 where
-    Geometry<C>: for<'a> From<&'a geo_types::Geometry<C::T>>,
+    C: From<geo_types::Coord<C::T>>,
+    super::Point<C>: for<'a> From<&'a geo_types::Point<C::T>>,
+    super::Line<C>: for<'a> From<&'a geo_types::Line<C::T>>,
+    super::LineString<C>: for<'a> From<&'a geo_types::LineString<C::T>>,
+    super::Polygon<C>: for<'a> From<&'a geo_types::Polygon<C::T>>,
+    super::MultiPoint<C>: for<'a> From<&'a geo_types::MultiPoint<C::T>>,
+    super::MultiLineString<C>: for<'a> From<&'a geo_types::MultiLineString<C::T>>,
+    super::MultiPolygon<C>: for<'a> From<&'a geo_types::MultiPolygon<C::T>>,
+    super::Rect<C>: for<'a> From<&'a geo_types::Rect<C::T>>,
+    super::Triangle<C>: for<'a> From<&'a geo_types::Triangle<C::T>>,
 {
     fn from(value: &geo_types::GeometryCollection<C::T>) -> Self {
-        let a = value.iter().map(Into::into).collect::<Vec<_>>();
-        Self(a)
+        GeometryCollection(value.iter().map(|g| convert_geometry(g)).collect())
     }
 }
-impl<C: Coord> From<&GeometryCollection<C>> for geo_types::GeometryCollection<C::T>
+
+// Helper function to convert without triggering the recursive bound
+fn convert_geometry<C: Coord>(value: &geo_types::Geometry<C::T>) -> Geometry<C>
 where
-    geo_types::Geometry<C::T>: for<'a> From<&'a Geometry<C>>,
+    C: From<geo_types::Coord<C::T>>,
+    super::Point<C>: for<'a> From<&'a geo_types::Point<C::T>>,
+    super::Line<C>: for<'a> From<&'a geo_types::Line<C::T>>,
+    super::LineString<C>: for<'a> From<&'a geo_types::LineString<C::T>>,
+    super::Polygon<C>: for<'a> From<&'a geo_types::Polygon<C::T>>,
+    super::MultiPoint<C>: for<'a> From<&'a geo_types::MultiPoint<C::T>>,
+    super::MultiLineString<C>: for<'a> From<&'a geo_types::MultiLineString<C::T>>,
+    super::MultiPolygon<C>: for<'a> From<&'a geo_types::MultiPolygon<C::T>>,
+    super::Rect<C>: for<'a> From<&'a geo_types::Rect<C::T>>,
+    super::Triangle<C>: for<'a> From<&'a geo_types::Triangle<C::T>>,
 {
-    fn from(value: &GeometryCollection<C>) -> Self {
-        Self::from_iter(value.0.iter().map(Into::<geo_types::Geometry<C::T>>::into))
+    match value {
+        geo_types::Geometry::Point(p) => Geometry::Point(p.into()),
+        geo_types::Geometry::Line(p) => Geometry::Line(p.into()),
+        geo_types::Geometry::LineString(p) => Geometry::LineString(p.into()),
+        geo_types::Geometry::Polygon(p) => Geometry::Polygon(p.into()),
+        geo_types::Geometry::MultiPoint(p) => Geometry::MultiPoint(p.into()),
+        geo_types::Geometry::MultiLineString(p) => Geometry::MultiLineString(p.into()),
+        geo_types::Geometry::MultiPolygon(p) => Geometry::MultiPolygon(p.into()),
+        geo_types::Geometry::GeometryCollection(gc) => Geometry::GeometryCollection(
+            GeometryCollection(gc.iter().map(|g| convert_geometry(g)).collect()),
+        ),
+        geo_types::Geometry::Rect(p) => Geometry::Rect(p.into()),
+        geo_types::Geometry::Triangle(p) => Geometry::Triangle(p.into()),
     }
 }

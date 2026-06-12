@@ -132,6 +132,7 @@ dependencies = [
  "rstest",
  "serde",
  "serde_json",
+ "wkt",
 ]
 
 [[package]]
